@@ -1,8 +1,34 @@
 <script setup>
 import { useLayout } from '@/layout/composables/layout';
 import AppConfigurator from './AppConfigurator.vue';
+import { useRouter } from 'vue-router';
+
+import { onMounted, ref } from 'vue';
+import { getAuth, onAuthStateChanged, signOut} from "firebase/auth";
+
+const isLoggedIn = ref(false);
+const router = useRouter();
+
+let auth;
+onMounted(() => {
+    auth = getAuth();
+    onAuthStateChanged(auth, (user) =>{
+        if (user){
+            isLoggedIn.value = true;
+        }
+        else {
+            isLoggedIn.value = false;
+        }
+    });
+});
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
+
+const handleSignOut = () => {
+    signOut(auth).then(() => {
+        router.push("/login");
+    });
+};
 </script>
 
 <template>
@@ -36,7 +62,10 @@ const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
                 </div>
             </div>
 
-        
+            <div v-if="isLoggedIn">
+                <Button @click="handleSignOut"> Logout </Button>
+            </div>
+
         </div>
     </div>
 </template>

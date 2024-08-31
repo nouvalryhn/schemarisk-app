@@ -1,4 +1,5 @@
 import AppLayout from '@/layout/AppLayout.vue';
+import { getAuth } from 'firebase/auth';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -11,12 +12,18 @@ const router = createRouter({
                 {
                     path: '/game',
                     name: 'game',
-                    component: () => import('@/views/pages/GameInputs.vue')
+                    component: () => import('@/views/pages/GameInputs.vue'),
+                    meta : {
+                        requiresAuth: true,
+                    },
                 },
                 {
                     path: '/',
                     name: 'dashboard',
-                    component: () => import('@/views/TheWelcome.vue')
+                    component: () => import('@/views/TheWelcome.vue'),
+                    meta : {
+                        requiresAuth: true,
+                    },
                 },
                 {
                     path: '/uikit/formlayout',
@@ -123,21 +130,41 @@ const router = createRouter({
         },
 
         {
-            path: '/auth/login',
+            path: '/login',
             name: 'login',
             component: () => import('@/views/pages/auth/Login.vue')
         },
+        {
+            path: '/register',
+            name: 'register',
+            component: () => import('@/views/pages/auth/Register.vue')
+        },
+
         {
             path: '/auth/access',
             name: 'accessDenied',
             component: () => import('@/views/pages/auth/Access.vue')
         },
+        
         {
             path: '/auth/error',
             name: 'error',
             component: () => import('@/views/pages/auth/Error.vue')
         }
     ]
+});
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some((record) => record.meta.requiresAuth)){
+        if (getAuth().currentUser){
+            next();
+        }else{
+            alert ("You don't have access, please login first");
+            next("/login");
+        }
+    } else {
+        next();
+    }
 });
 
 export default router;
