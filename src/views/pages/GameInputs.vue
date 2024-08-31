@@ -90,9 +90,33 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 import { initializeApp } from "firebase/app";
 import { collection, addDoc, getFirestore } from "firebase/firestore";
+
+import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { getAuth, onAuthStateChanged, signOut} from "firebase/auth";
+
+const isLoggedIn = ref(false);
+const router = useRouter();
+
+const userDetail = ref();
+
+let auth;
+onMounted(() => {
+    auth = getAuth();
+    onAuthStateChanged(auth, (user) =>{
+        if (user){
+            isLoggedIn.value = true;
+            userDetail.value = user.email;
+            console.log("user detail : ");
+            console.log(userDetail.value);
+        }
+        else {
+            isLoggedIn.value = false;
+        }
+    });
+});
 
 const firebaseConfig = {
   apiKey: "AIzaSyAHdlLJ9YPxm1kmXdO7mK9xgg8jwXjNIHM",
@@ -138,6 +162,7 @@ const esti_amount = ref(0);
 const addData = async () =>  {
         try {
             const docRef = await addDoc(collection(db, "response-soal"), {
+                "user": userDetail.value,
                 "ans_1": answer_1.value,
                 "ans_2": answer_2.value,
                 "ans_3": answer_3.value,
@@ -156,6 +181,7 @@ const addData = async () =>  {
 const SubmitAns = async () => {
     try {
             const docRef = await addDoc(collection(db, "response-soal"), {
+                "user": userDetail.value,
                 "ans_1": answer_1.value,
                 "ans_2": answer_2.value,
                 "ans_3": answer_3.value,
@@ -174,6 +200,7 @@ const SubmitAns = async () => {
 const SubmitPoints = async () => {
     try {
             const docRef = await addDoc(collection(db, "response-points"), {
+                "user": userDetail.value,
                 "wil_1": wilayah1.value,
                 "wil_2": wilayah2.value,
                 "wil_3": wilayah3.value,

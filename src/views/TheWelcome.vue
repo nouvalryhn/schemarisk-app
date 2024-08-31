@@ -1,6 +1,33 @@
+<script setup>
+import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { getAuth, onAuthStateChanged, signOut} from "firebase/auth";
+
+const isLoggedIn = ref(false);
+const router = useRouter();
+
+const userDetail = ref();
+
+let auth;
+onMounted(() => {
+    auth = getAuth();
+    onAuthStateChanged(auth, (user) =>{
+        if (user){
+            isLoggedIn.value = true;
+            userDetail.value = user.email;
+            console.log("user detail : ");
+            console.log(userDetail.value);
+        }
+        else {
+            isLoggedIn.value = false;
+        }
+    });
+});
+</script>
+
 <template>
     <div className="card">
-        <div class="font-bold text-xl mb-4">Selamat Datang, Tim A!</div>
+        <div class="font-bold text-xl mb-4">Selamat Datang, {{ userDetail }}!</div>
         <h2>Mohon baca aturan permainan sebelum memulai :</h2>
         <br>
         <div id="rulebook">
