@@ -37,25 +37,17 @@ const password = ref("");
 const router = useRouter();
 const teamName = ref();
 
-const register = () => {
+const register = async () => {
     const auth = getAuth();
-    createUserWithEmailAndPassword(auth, email.value, password.value)
+    await createUserWithEmailAndPassword(auth, email.value, password.value)
         .then(async (data) => {
-            console.log("Register Success");
-
-            console.log(auth.currentUser);
-
              if (auth.currentUser.uid) {
-            
-                console.log("mamang Success");
                 try {
-                    console.log("attempting to register user id: ", auth.currentUser.uid)
                     await setDoc(doc(db, "users", auth.currentUser.uid), {
                         balance: 0,
                         team_name: teamName.value,
 
                     });
-                    console.log("Document written with ID");
                 } catch (e) {
                     console.error("Error adding document: ", e);
                 }

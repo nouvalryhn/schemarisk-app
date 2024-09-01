@@ -243,7 +243,6 @@ const SubmitAns = async () => {
       ans_3: answer_3.value,
       timestamp: new Date(),
     });
-    console.log("Document written with ID");
   } catch (e) {
     console.error("Error adding document: ", e);
   }
@@ -276,7 +275,7 @@ const SubmitPoints = async () => {
       wil_7: wilayah7.value,
       timestamp: new Date(),
     });
-    console.log("Document written with ID");
+
   } catch (e) {
     console.error("Error adding document: ", e);
   }
@@ -303,7 +302,7 @@ const SubmitShop = async () => {
       esti_amount: esti_amount.value,
       timestamp: new Date(),
     });
-    console.log("Document written with ID");
+   
   } catch (e) {
     console.error("Error adding document: ", e);
   }

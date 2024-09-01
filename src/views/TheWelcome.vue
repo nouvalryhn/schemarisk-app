@@ -15,8 +15,6 @@ onMounted(() => {
         if (user){
             isLoggedIn.value = true;
             userDetail.value = user.email;
-            console.log("user detail : ");
-            console.log(userDetail.value);
         }
         else {
             isLoggedIn.value = false;

@@ -15,14 +15,9 @@ const handleLogin = () => {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email.value, password.value)
         .then((data) => {
-            console.log("SignIn Success");
-
-            console.log(auth.currentUser);
-
             router.push('/');
         })
         .catch((error) => {
-            console.log(error.code);
 
             switch (error.code) {
                 case "auth/invalid-email":
