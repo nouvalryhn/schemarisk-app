@@ -10,19 +10,8 @@ import ToastService from 'primevue/toastservice';
 import '@/assets/styles.scss';
 import '@/assets/tailwind.css';
 
-import { initializeApp } from "firebase/app";
-import { collection, addDoc, getFirestore } from "firebase/firestore";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAHdlLJ9YPxm1kmXdO7mK9xgg8jwXjNIHM",
-  authDomain: "schemarisk.firebaseapp.com",
-  projectId: "schemarisk",
-  storageBucket: "schemarisk.appspot.com",
-  messagingSenderId: "115339774204",
-  appId: "1:115339774204:web:2df41c150254b00a8a6f79"
-};
-
-initializeApp(firebaseConfig);
+import './firebase';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 const app = createApp(App);
 
@@ -37,5 +26,16 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(ConfirmationService);
+
+const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // User is signed in, you can redirect them to the intended route if needed
+    } else {
+        // User is not signed in, handle accordingly
+        router.push('/auth/access');
+    }
+});
 
 app.mount('#app');

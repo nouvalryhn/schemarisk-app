@@ -1,5 +1,5 @@
 import AppLayout from '@/layout/AppLayout.vue';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -154,17 +154,23 @@ const router = createRouter({
     ]
 });
 
+
+
 router.beforeEach((to, from, next) => {
-    if (to.matched.some((record) => record.meta.requiresAuth)){
-        if (getAuth().currentUser){
-            next();
-        }else{
-            alert ("You don't have access, please login first");
-            next("/login");
+    const auth = getAuth();
+
+    // Wait for Firebase auth state to be determined
+    onAuthStateChanged(auth, (user) => {
+        if (to.matched.some((record) => record.meta.requiresAuth)) {
+            if (user) {
+                next(); // User is authenticated, proceed
+            } else {
+                next("/auth/access"); // Redirect to access denied
+            }
+        } else {
+            next(); // No authentication required, proceed
         }
-    } else {
-        next();
-    }
+    });
 });
 
 export default router;
