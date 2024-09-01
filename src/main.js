@@ -19,23 +19,26 @@ app.use(router);
 app.use(PrimeVue, {
     theme: {
         preset: Aura,
+        color: 'yellow',
         options: {
-            darkModeSelector: '.app-dark'
+            darkModeSelector: '.app-dark',
+            
+
         }
     }
 });
 app.use(ToastService);
 app.use(ConfirmationService);
 
-const auth = getAuth();
+// const auth = getAuth();
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // User is signed in, you can redirect them to the intended route if needed
-    } else {
-        // User is not signed in, handle accordingly
-        router.push('/auth/access');
-    }
-});
+// onAuthStateChanged(auth, (user) => {
+//     if (user) {
+//         // User is signed in, you can redirect them to the intended route if needed
+//     } else {
+//         // User is not signed in, handle accordingly
+//         router.push('/auth/access');
+//     }
+// });
 
 app.mount('#app');

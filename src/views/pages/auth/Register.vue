@@ -66,7 +66,7 @@ const register = () => {
             alert(error.message);
         });
 
-
+    router.push("/");
 };
 
 
