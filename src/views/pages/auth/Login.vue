@@ -56,7 +56,8 @@ const handleLogin = () => {
                         <span class="text-muted-color font-medium">Sign in to continue</span>
                     </div>
 
-                    <div>
+                    <form @submit.prevent="handleLogin">
+                        <div>
                         <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
                         <InputText id="email1" type="text" placeholder="Email address" class="w-full md:w-[30rem] mb-8" v-model="email" />
 
@@ -68,8 +69,9 @@ const handleLogin = () => {
                         </div>
 
                         <p v-if="errmsg">{{ errmsg }}</p>
-                        <Button label="Sign In" @click="handleLogin"></Button>
-                    </div>
+                        <Button type="submit" label="Sign In"></Button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
