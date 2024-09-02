@@ -10,6 +10,7 @@
         </div>
     </Fluid>
 
+    <router-link to="/register"></router-link>
 
 </template>
 
@@ -44,7 +45,7 @@ const register = async () => {
              if (auth.currentUser.uid) {
                 try {
                     await setDoc(doc(db, "users", auth.currentUser.uid), {
-                        balance: 0,
+                        balance: 999,
                         team_name: teamName.value,
 
                     });
@@ -54,17 +55,12 @@ const register = async () => {
             }
         })
         .catch((error) => {
-            console.log(error.code);
+            console.error(error.code);
             alert(error.message);
         });
 
     router.push("/");
 };
 
-
-
-// setTimeout(() => {
-//     router.push('/');
-// }, 3000);
 
 </script>

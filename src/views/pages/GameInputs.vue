@@ -61,7 +61,6 @@
           @click="SubmitAns"
         ></Button>
       </div>
-
     </div>
     <div v-if="showForm === 'bagi-wilayah'">
       <div class="flex flex-col gap-4">
@@ -154,17 +153,37 @@
   </div>
   <div class="card">
     <div class="font-bold text-xl mb-4">Recent Actions</div>
-    <ul>
-      <li v-for="action in recentActions" :key="action">{{ action }}</li>
-    </ul>
+    <div v-for="act in recentActions">
+      <div v-if="act.type == 'jawab-soal'">
+        Jawab Soal - {{ formatTimestamp(act.timestamp) }}
+      </div>
+      <div v-if="act.type == 'bagi-wilayah'">
+        Bagi Wilayah - {{ formatTimestamp(act.timestamp) }}
+      </div>
+      <div v-if="act.type == 'belanja-troops'">
+        Belanja Troops - {{ formatTimestamp(act.timestamp) }}
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { initializeApp } from "firebase/app";
-import { collection, addDoc, getFirestore, doc, onSnapshot, arrayUnion, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getFirestore,
+  doc,
+  onSnapshot,
+  arrayUnion,
+  updateDoc,
+} from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted } from "vue";
+import { useToast } from "primevue/usetoast";
+
+const toast = useToast();
+const message = ref([]);
 
 // Firebase configuration
 const firebaseConfig = {
@@ -173,7 +192,7 @@ const firebaseConfig = {
   projectId: "schemarisk",
   storageBucket: "schemarisk.appspot.com",
   messagingSenderId: "115339774204",
-  appId: "1:115339774204:web:2df41c150254b00a8a6f79"
+  appId: "1:115339774204:web:2df41c150254b00a8a6f79",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -181,21 +200,29 @@ const db = getFirestore(app);
 const auth = getAuth();
 
 const uid = ref();
-const teamName = ref('');
+const teamName = ref("");
 const balance = ref(0);
 const recentActions = ref([]);
 const showForm = ref(null);
 const activeButton = ref();
 const buttons = [
-  { label: 'Jawab Soal', icon: 'pi pi-pencil', id: 'jawab-soal' },
-  { label: 'Bagi Poin Wilayahmu', icon: 'pi pi-map-marker', id: 'bagi-wilayah' },
-  { label: 'Belanja Troops', icon: 'pi pi-shopping-cart', id: 'belanja-troops' }
+  { label: "Jawab Soal", icon: "pi pi-pencil", id: "jawab-soal" },
+  {
+    label: "Bagi Poin Wilayahmu",
+    icon: "pi pi-map-marker",
+    id: "bagi-wilayah",
+  },
+  {
+    label: "Belanja Troops",
+    icon: "pi pi-shopping-cart",
+    id: "belanja-troops",
+  },
 ];
 
 // Form fields
-const answer_1 = ref('');
-const answer_2 = ref('');
-const answer_3 = ref('');
+const answer_1 = ref("");
+const answer_2 = ref("");
+const answer_3 = ref("");
 const wilayah1 = ref(0);
 const wilayah2 = ref(0);
 const wilayah3 = ref(0);
@@ -213,24 +240,45 @@ onMounted(() => {
     if (user) {
       uid.value = user.uid;
       setupFirestoreListener(user.uid);
+      setupActivityListener(user.uid);
     } else {
       uid.value = null;
     }
   });
 });
 
-
 const setupFirestoreListener = (userId) => {
-  const userDocRef = doc(db, 'users', userId);
-  onSnapshot(userDocRef, (doc) => {
-    if (doc.exists()) {
-      const data = doc.data();
-      teamName.value = data.team_name || '';
-      balance.value = data.balance || 0;
+  const userDocRef = doc(db, "users", userId);
+  onSnapshot(
+    userDocRef,
+    (doc) => {
+      if (doc.exists()) {
+        const data = doc.data();
+        teamName.value = data.team_name || "";
+        balance.value = data.balance || 0;
+      }
+    },
+    (error) => {
+      console.error("Error fetching document: ", error);
     }
-  }, (error) => {
-    console.error('Error fetching document: ', error);
-  });
+  );
+};
+
+const setupActivityListener = (userId) => {
+  const activityRef = doc(db, "users", userId);
+  onSnapshot(
+    activityRef,
+    (doc) => {
+      if (doc.exists()) {
+        const data = doc.data();
+        recentActions.value = [];
+        recentActions.value = data.actions;
+      }
+    },
+    (error) => {
+      console.error("Error fetching recent actions: ", error);
+    }
+  );
 };
 
 // Form submission functions
@@ -243,24 +291,28 @@ const SubmitAns = async () => {
       ans_3: answer_3.value,
       timestamp: new Date(),
     });
+    showSuccess();
   } catch (e) {
     console.error("Error adding document: ", e);
+    showError();
   }
 
   await addJawab();
 };
 
 const addJawab = async () => {
-    try{
-      let actionsRef = doc(db, "users", uid.value);
-      await updateDoc( actionsRef, {
-        "jawab-soal": arrayUnion(new Date())
+  try {
+    let actionsRef = doc(db, "users", uid.value);
+    await updateDoc(actionsRef, {
+      actions: arrayUnion({
+        type: "jawab-soal",
+        timestamp: new Date(),
+      }),
     });
-    }catch(e){
-        console.error("Error action:", e);
-    }
+  } catch (e) {
+    console.error("Error adding action (addJawab) :", e);
   }
-
+};
 
 const SubmitPoints = async () => {
   try {
@@ -275,24 +327,29 @@ const SubmitPoints = async () => {
       wil_7: wilayah7.value,
       timestamp: new Date(),
     });
+    showSuccess();
 
   } catch (e) {
     console.error("Error adding document: ", e);
+    showError();
   }
 
   await addBagi();
 };
 
 const addBagi = async () => {
-    try{
-      let actionsRef = doc(db, "users", uid.value);
-      await updateDoc( actionsRef, {
-        "bagi-wilayah": arrayUnion(new Date())
+  try {
+    let actionsRef = doc(db, "users", uid.value);
+    await updateDoc(actionsRef, {
+      actions: arrayUnion({
+        type: "bagi-wilayah",
+        timestamp: new Date(),
+      }),
     });
-    }catch(e){
-        console.error("Error action:", e);
-    }
+  } catch (e) {
+    console.error("Error adding action (addJawab) :", e);
   }
+};
 
 const SubmitShop = async () => {
   try {
@@ -302,25 +359,56 @@ const SubmitShop = async () => {
       esti_amount: esti_amount.value,
       timestamp: new Date(),
     });
-   
+    showSuccess();
   } catch (e) {
     console.error("Error adding document: ", e);
+    showError();
   }
 
   await addShop();
 };
 
 const addShop = async () => {
-    try{
-      let actionsRef = doc(db, "users", uid.value);
-      await updateDoc( actionsRef, {
-        "belanja-troops": arrayUnion(new Date())
+  try {
+    let actionsRef = doc(db, "users", uid.value);
+    await updateDoc(actionsRef, {
+      actions: arrayUnion({
+        type: "belanja-troops",
+        timestamp: new Date(),
+      }),
     });
-    }catch(e){
-        console.error("Error action:", e);
-    }
+  } catch (e) {
+    console.error("Error adding action (addJawab) :", e);
   }
+};
 
+const formatTimestamp = (timestamp) => {
+  // Convert Firestore Timestamp to JavaScript Date
+  const date = new Date(
+    timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
+  );
+
+  // Format date to local time string
+  return date.toLocaleString(); // or use date.toLocaleDateString() for just date, or date.toLocaleTimeString() for just time
+};
+
+function showSuccess() {
+  toast.add({
+    severity: "success",
+    summary: "Success",
+    detail: "Submisi anda berhasil disimpan",
+    life: 3000,
+  });
+}
+
+function showError() {
+  toast.add({
+    severity: "error",
+    summary: "Error",
+    detail: "Terjadi kesalahan, coba lagi. Hubungi admin jika berlanjut",
+    life: 3000,
+  });
+}
 // Button and form actions
 const setActiveButton = (id) => {
   activeButton.value = id;

@@ -63,6 +63,10 @@ const handleLogin = () => {
                         <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
                         <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true" class="mb-4" fluid :feedback="false"></Password>
 
+                        <div>
+                            <router-link to="/register">Daftar dulu disini (sementara)</router-link>
+                        </div>
+
                         <p v-if="errmsg">{{ errmsg }}</p>
                         <Button label="Sign In" @click="handleLogin"></Button>
                     </div>

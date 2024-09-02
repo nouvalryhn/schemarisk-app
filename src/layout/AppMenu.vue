@@ -8,7 +8,7 @@ const model = ref([
         label: 'Menu',
         items: [
             { label: 'Home', icon: 'pi pi-fw pi-home', to: '/' },
-            { label: 'Schemarisk Game Inputs', icon: 'pi pi-fw pi-map', to: '/game' },
+            { label: 'Conqueratics Game', icon: 'pi pi-fw pi-map', to: '/game' },
         ]
     },
     // {

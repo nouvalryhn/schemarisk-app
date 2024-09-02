@@ -3,7 +3,8 @@ import { useLayout } from '@/layout/composables/layout';
 import { $t, updatePreset, updateSurfacePalette } from '@primevue/themes';
 import Aura from '@primevue/themes/aura';
 import Lara from '@primevue/themes/lara';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+
 
 const { layoutConfig, setPrimary, setSurface, setPreset, isDarkTheme, setMenuMode } = useLayout();
 
@@ -194,6 +195,10 @@ function onPresetChange() {
 function onMenuModeChange() {
     setMenuMode(menuMode.value);
 }
+
+updateColors('primary', {name : 'yellow'});
+
+
 </script>
 
 <template>

@@ -41,7 +41,7 @@ const handleSignOut = () => {
 
                 <img src="/public/images/logo.png" style="max-height: 40px;">
 
-                <span>Schemarisk</span>
+                <span>Conqueratics</span>
             </router-link>
         </div>
 
@@ -50,16 +50,7 @@ const handleSignOut = () => {
                 <button type="button" class="layout-topbar-action" @click="toggleDarkMode">
                     <i :class="['pi', { 'pi-moon': isDarkTheme, 'pi-sun': !isDarkTheme }]"></i>
                 </button>
-                <div class="relative">
-                    <button
-                        v-styleclass="{ selector: '@next', enterFromClass: 'hidden', enterActiveClass: 'animate-scalein', leaveToClass: 'hidden', leaveActiveClass: 'animate-fadeout', hideOnOutsideClick: true }"
-                        type="button"
-                        class="layout-topbar-action layout-topbar-action-highlight"
-                    >
-                        <i class="pi pi-palette"></i>
-                    </button>
                     <AppConfigurator />
-                </div>
             </div>
 
             <div v-if="isLoggedIn">
