@@ -114,7 +114,6 @@
         <p>Your Balance : {{ balance }}</p>
         <div class="grid grid-cols-12 gap-2">
           <label
-            for="name3"
             class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0"
             >Elsi (15$)</label
           >
@@ -124,7 +123,6 @@
         </div>
         <div class="grid grid-cols-12 gap-2">
           <label
-            for="email3"
             class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0"
             >Pisi (10$)</label
           >
@@ -134,7 +132,6 @@
         </div>
         <div class="grid grid-cols-12 gap-2">
           <label
-            for="email3"
             class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0"
             >Esti (5$)</label
           >
@@ -153,16 +150,25 @@
   </div>
   <div class="card">
     <div class="font-bold text-xl mb-4">Recent Actions</div>
-    <div v-for="act in recentActions">
-      <div v-if="act.type == 'jawab-soal'">
-        Jawab Soal - {{ formatTimestamp(act.timestamp) }}
-      </div>
-      <div v-if="act.type == 'bagi-wilayah'">
-        Bagi Wilayah - {{ formatTimestamp(act.timestamp) }}
-      </div>
-      <div v-if="act.type == 'belanja-troops'">
-        Belanja Troops - {{ formatTimestamp(act.timestamp) }}
-      </div>
+    <div>
+      <DataTable :value="recentActions" scrollable scrollHeight="400px" class="mt-6">
+        <Column field="id" header="ID" style="min-width: 200px"> </Column>
+        <Column field="type" header="Aksi" style="min-width: 200px" frozen class="font-bold" >
+          <template #body="slotProps">
+            <span>{{ formatActions(slotProps.data.type) }}</span>
+          </template>
+        </Column>
+        <Column field="timestamp" header="Waktu" style="min-width: 200px">
+          <template #body="slotProps">
+            <span>{{ formatDateToLocal(slotProps.data.timestamp) }}</span>
+          </template>
+        </Column>
+        <Column field="status" header="Status" style="min-width: 200px;">
+          <template #body="">
+            <Tag severity="success" value="Success"></Tag>
+          </template>
+        </Column>
+      </DataTable>
     </div>
   </div>
 </template>
@@ -177,6 +183,7 @@ import {
   onSnapshot,
   arrayUnion,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, onMounted } from "vue";
@@ -271,8 +278,9 @@ const setupActivityListener = (userId) => {
     (doc) => {
       if (doc.exists()) {
         const data = doc.data();
-        recentActions.value = [];
         recentActions.value = data.actions;
+        // console.log(recentActions.value);
+        // recentActions.value = convertTimestampsToLocalTime(recentActions.value);
       }
     },
     (error) => {
@@ -281,32 +289,75 @@ const setupActivityListener = (userId) => {
   );
 };
 
-// Form submission functions
-const SubmitAns = async () => {
+const formatActions = (type) => {
+  switch (type){
+    case 'jawab-soal' :
+      return 'Submit Jawab Soal';
+      break;
+    case 'bagi-wilayah' :
+      return 'Bagi Poin Wilayah';
+      break;
+    case 'belanja-troops' :
+      return 'Belanja Troops'
+      break;
+  }
+}
+
+const convertFirestoreTimestampToDate = (timestamp) => {
+  if (timestamp && timestamp.seconds) {
+    return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+  }
+  return null;
+};
+
+// Function to format date to local time
+const formatDateToLocal = (timestamp) => {
   try {
-    await addDoc(collection(db, "response-soal"), {
+    const date = convertFirestoreTimestampToDate(timestamp);
+    if (date) {
+      return new Intl.DateTimeFormat(navigator.language, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }).format(date);
+    } else {
+      return 'Invalid Date';
+    }
+  } catch (error) {
+    console.error('Date formatting error:', error);
+    return 'Invalid Date';
+  }
+};
+const SubmitAns = async () => {
+  let docId;
+  try {
+    const docRef = await addDoc(collection(db, "response-soal"), {
       user: uid.value,
       ans_1: answer_1.value,
       ans_2: answer_2.value,
       ans_3: answer_3.value,
       timestamp: new Date(),
     });
-    showSuccess();
+    docId = docRef.id;
+    showSuccess(docId);
   } catch (e) {
     console.error("Error adding document: ", e);
     showError();
   }
-
-  await addJawab();
+  await addJawab(docId);
 };
 
-const addJawab = async () => {
+const addJawab = async (docId) => {
   try {
     let actionsRef = doc(db, "users", uid.value);
     await updateDoc(actionsRef, {
       actions: arrayUnion({
         type: "jawab-soal",
         timestamp: new Date(),
+        id: docId
       }),
     });
   } catch (e) {
@@ -315,8 +366,9 @@ const addJawab = async () => {
 };
 
 const SubmitPoints = async () => {
+  let docId;
   try {
-    await addDoc(collection(db, "response-points"), {
+    const docRef = await addDoc(collection(db, "response-points"), {
       user: uid.value,
       wil_1: wilayah1.value,
       wil_2: wilayah2.value,
@@ -327,76 +379,83 @@ const SubmitPoints = async () => {
       wil_7: wilayah7.value,
       timestamp: new Date(),
     });
-    showSuccess();
+    docId = docRef.id;
+    showSuccess(docId);
 
   } catch (e) {
     console.error("Error adding document: ", e);
     showError();
   }
 
-  await addBagi();
+  await addBagi(docId);
 };
 
-const addBagi = async () => {
+const addBagi = async (docId) => {
   try {
     let actionsRef = doc(db, "users", uid.value);
     await updateDoc(actionsRef, {
       actions: arrayUnion({
         type: "bagi-wilayah",
         timestamp: new Date(),
+        id : docId,
       }),
     });
   } catch (e) {
-    console.error("Error adding action (addJawab) :", e);
+    console.error("Error adding action (addBagi) :", e);
   }
 };
 
 const SubmitShop = async () => {
+  let docId;
   try {
-    await addDoc(collection(db, "response-shop"), {
+    const docRef = await addDoc(collection(db, "response-shop"), {
       elsi_amount: elsi_amount.value,
       pisi_amount: pisi_amount.value,
       esti_amount: esti_amount.value,
       timestamp: new Date(),
     });
-    showSuccess();
+
+    const balanceRef = await updateDoc(doc(db, "users", auth.currentUser.uid), {
+      balance : balance.value - (15*elsi_amount.value + 10*pisi_amount.value + 5*esti_amount.value),
+    });
+
+    docId = docRef.id
+    showSuccess(docId);
   } catch (e) {
     console.error("Error adding document: ", e);
     showError();
   }
 
-  await addShop();
+  await addShop(docId);
 };
 
-const addShop = async () => {
+const addShop = async (docId) => {
   try {
     let actionsRef = doc(db, "users", uid.value);
     await updateDoc(actionsRef, {
       actions: arrayUnion({
         type: "belanja-troops",
         timestamp: new Date(),
+        id : docId,
       }),
     });
   } catch (e) {
-    console.error("Error adding action (addJawab) :", e);
+    console.error("Error adding action (addShop) :", e);
   }
 };
 
 const formatTimestamp = (timestamp) => {
-  // Convert Firestore Timestamp to JavaScript Date
   const date = new Date(
     timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000
   );
-
-  // Format date to local time string
-  return date.toLocaleString(); // or use date.toLocaleDateString() for just date, or date.toLocaleTimeString() for just time
+  return date.toLocaleTimeString(); 
 };
 
-function showSuccess() {
+function showSuccess(docID) {
   toast.add({
     severity: "success",
     summary: "Success",
-    detail: "Submisi anda berhasil disimpan",
+    detail: "Submisi anda berhasil disimpan dengan ID : " + docID,
     life: 3000,
   });
 }
@@ -413,6 +472,5 @@ function showError() {
 const setActiveButton = (id) => {
   activeButton.value = id;
   showForm.value = id;
-  recentActions.value.push(id);
 };
 </script>

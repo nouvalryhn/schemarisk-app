@@ -3,13 +3,22 @@ import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'
 
-import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 const email = ref("");
 const password = ref("");
 const router = useRouter();
 
 const errmsg = ref(null);
+
+const auth = getAuth();
+
+onAuthStateChanged(auth, (user) => {
+        if (user) {
+            router.push("/");
+        } else {
+            }
+});
 
 const handleLogin = () => {
     const auth = getAuth();
