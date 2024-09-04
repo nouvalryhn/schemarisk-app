@@ -79,10 +79,10 @@
                     </Column>
                     <Column field="jawaban" header="Jawaban" style="min-width: 100px">
                         <template #body="slotProps">
-                            <p>Wil 1: {{ slotProps.data.wil_1 }} Wil 5: {{ slotProps.data.wil_5 }}</p>
-                            <p>Wil 2: {{ slotProps.data.wil_2 }} Wil 6: {{ slotProps.data.wil_6 }}</p>
-                            <p>Wil 3: {{ slotProps.data.wil_3 }} Wil 7: {{ slotProps.data.wil_7 }}</p>
-                            <p>Wil 4: {{ slotProps.data.wil_4 }}</p>
+                            <p>Wil 1: {{ slotProps.data.wil_1 }} Wil 2: {{ slotProps.data.wil_5 }}</p>
+                            <p>Wil 3: {{ slotProps.data.wil_2 }} Wil 4: {{ slotProps.data.wil_6 }}</p>
+                            <p>Wil 5: {{ slotProps.data.wil_3 }} Wil 6: {{ slotProps.data.wil_7 }}</p>
+                            <p>Wil 7: {{ slotProps.data.wil_4 }}</p>
                         </template>
                     </Column>
                 </DataTable>
