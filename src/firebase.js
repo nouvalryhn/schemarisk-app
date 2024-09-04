@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, setPersistence, browserSessionPersistence } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 // Your Firebase configuration object
 const firebaseConfig = {
@@ -15,6 +16,7 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication and set persistence
 const auth = getAuth(app);
+const db = getFirestore(app)
 
 setPersistence(auth, browserSessionPersistence)
   .then(() => {
@@ -24,4 +26,4 @@ setPersistence(auth, browserSessionPersistence)
     console.error('Error setting authentication persistence:', error);
   });
 
-export { auth };
+export { auth, db };

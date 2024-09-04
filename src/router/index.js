@@ -1,6 +1,9 @@
 import AppLayout from '@/layout/AppLayout.vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { createRouter, createWebHistory } from 'vue-router';
+import { db } from '@/firebase';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+
 
 const router = createRouter({
     history: createWebHistory(),
@@ -23,6 +26,15 @@ const router = createRouter({
                     component: () => import('@/views/TheWelcome.vue'),
                     meta : {
                         requiresAuth: true,
+                    },
+                },
+                {
+                    path: '/admin',
+                    name: 'admin',
+                    component: () => import('@/views/pages/TheAdmin.vue'),
+                    meta : {
+                        requiresAuth: true,
+                        requiresAdmin: true,
                     },
                 },
                 {
@@ -154,21 +166,43 @@ const router = createRouter({
     ]
 });
 
+const isUserAdmin = async (uid) => {
+    console.log("checking admin", uid);
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
+    let isAdmin = false;
+    if (docSnap.exists()){
+        isAdmin = docSnap.data().isAdmin;
+    }
+    if (isAdmin) 
+        return true;
+    else return false;
 
+}
 
 router.beforeEach((to, from, next) => {
     const auth = getAuth();
 
     // Wait for Firebase auth state to be determined
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
         if (to.matched.some((record) => record.meta.requiresAuth)) {
             if (user) {
-                next(); // User is authenticated, proceed
+                if (to.matched.some((record) => record.meta.requiresAdmin)){
+                    if(await isUserAdmin(auth.currentUser.uid)){
+                        next();
+                    }
+                    else{
+                        next("/auth/access");
+                    }
+                }else{
+                    next();
+                }
+                
             } else {
                 next("/auth/access"); // Redirect to access denied
             }
         } else {
-            next(); // No authentication required, proceed
+            next();
         }
     });
 });

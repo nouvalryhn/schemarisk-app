@@ -1,11 +1,32 @@
 <template>
-  <div class="card">
-    <div class="font-bold text-xl mb-4">Team Details</div>
-    <p>Nama Tim: {{ teamName }}</p>
-    <p>ID: {{ uid }}</p>
-    <p>Neleci: {{ balance }}</p>
+
+<div class="flex flex-col md:flex-row gap-8">
+  <div class="md:w-2/3">
+      <div class="card">
+        <div class="font-bold text-xl mb-4">Team Details</div>
+        <p>Nama Tim: {{ teamName }}</p>
+        <p>ID: {{ uid }}</p>
+        <p>Neleci: {{ balance }}</p>
+        <p>Ruang: {{ ruang }}</p>
+        <Button v-if="isAdmin"label="Go to Admin Page" @click="router.push('/admin')"></Button>
+      </div>
   </div>
-  <!-- Other parts of the template remain unchanged -->
+
+  <div class="md:w-1/3">
+      <div class="card">
+        <div class="font-bold text-xl mb-4">Troops Inventory</div>
+        <div class="text-lg">Elsi : {{ elsi_bal }}</div>
+        <div class="text-lg">Pisi : {{ pisi_bal }}</div>
+        <div class="text-lg">Esti : {{ esti_bal }}</div>
+      </div>
+  </div>
+  
+</div>
+  
+
+  <div class="flex flex-col md:flex-row gap-8 mt-6">
+    
+  </div>
   <div class="card">
     <div class="font-bold text-xl mb-4">Game Inputs</div>
 
@@ -139,6 +160,7 @@
             <InputNumber id="email3" type="text" v-model="esti_amount" />
           </div>
         </div>
+        <p v-if="elsi_amount || pisi_amount || esti_amount">Total Belanja : {{ 15*elsi_amount + 10*pisi_amount + 5*esti_amount   }} neleci</p>
       </div>
       <br />
       <Button
@@ -152,6 +174,9 @@
     <div class="font-bold text-xl mb-4">Recent Actions</div>
     <div>
       <DataTable :value="recentActions" scrollable scrollHeight="400px" class="mt-6">
+        <template #empty>
+          Tidak ada riwayat.
+        </template>
         <Column field="id" header="ID" style="min-width: 200px"> </Column>
         <Column field="type" header="Aksi" style="min-width: 200px" frozen class="font-bold" >
           <template #body="slotProps">
@@ -165,7 +190,7 @@
         </Column>
         <Column field="status" header="Status" style="min-width: 200px;">
           <template #body="">
-            <Tag severity="success" value="Success"></Tag>
+            <Tag icon="pi pi-check" severity="success" value="Success"></Tag>
           </template>
         </Column>
       </DataTable>
@@ -188,7 +213,9 @@ import {
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, onMounted } from "vue";
 import { useToast } from "primevue/usetoast";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const toast = useToast();
 const message = ref([]);
 
@@ -209,6 +236,12 @@ const auth = getAuth();
 const uid = ref();
 const teamName = ref("");
 const balance = ref(0);
+const ruang = ref("");
+const isAdmin = ref(false);
+const elsi_bal = ref();
+const pisi_bal = ref();
+const esti_bal = ref();
+
 const recentActions = ref([]);
 const showForm = ref(null);
 const activeButton = ref();
@@ -263,6 +296,11 @@ const setupFirestoreListener = (userId) => {
         const data = doc.data();
         teamName.value = data.team_name || "";
         balance.value = data.balance || 0;
+        ruang.value = data.ruang || "";
+        isAdmin.value = data.isAdmin || false;
+        elsi_bal.value = data.elsi_bal;
+        esti_bal.value = data.esti_bal;
+        pisi_bal.value = data.pisi_bal;
       }
     },
     (error) => {
@@ -340,6 +378,8 @@ const SubmitAns = async () => {
       ans_2: answer_2.value,
       ans_3: answer_3.value,
       timestamp: new Date(),
+      ruang: ruang.value,
+      team_name: teamName.value,
     });
     docId = docRef.id;
     showSuccess(docId);
@@ -378,6 +418,8 @@ const SubmitPoints = async () => {
       wil_6: wilayah6.value,
       wil_7: wilayah7.value,
       timestamp: new Date(),
+      ruang: ruang.value,
+      team_name: teamName.value,
     });
     docId = docRef.id;
     showSuccess(docId);
@@ -409,10 +451,13 @@ const SubmitShop = async () => {
   let docId;
   try {
     const docRef = await addDoc(collection(db, "response-shop"), {
+      user: uid.value,
       elsi_amount: elsi_amount.value,
       pisi_amount: pisi_amount.value,
       esti_amount: esti_amount.value,
       timestamp: new Date(),
+      ruang: ruang.value,
+      team_name: teamName.value,
     });
 
     const balanceRef = await updateDoc(doc(db, "users", auth.currentUser.uid), {
@@ -438,6 +483,12 @@ const addShop = async (docId) => {
         timestamp: new Date(),
         id : docId,
       }),
+    });
+
+    const balanceRef = await updateDoc(doc(db, "users", auth.currentUser.uid), {
+      elsi_bal: elsi_bal.value + elsi_amount.value,
+      esti_bal: esti_bal.value + esti_amount.value,
+      pisi_bal: pisi_bal.value + pisi_amount.value,
     });
   } catch (e) {
     console.error("Error adding action (addShop) :", e);
