@@ -20,10 +20,13 @@
             <div class="card">
                 <div class="font-bold text-xl mb-4">Panel Admin</div>
 
+                <div class="font-bold mb-6">
                 <p>Tambah Neleci</p>
-                <p>BLOM</p>
 
-                <br>
+                <Select :options="teamsInRoom" v-model="selectedTeam" class="w-full mb-2"></Select>
+                <InputNumber v-model="addBalanceAmount" class="w-full mb-2" />
+                <Button label="GAS" @click="addBalance"></Button>
+                </div>
 
                 <p>Ganti Warna Wilayah</p>
                 <p>BLOM</p>
@@ -136,6 +139,7 @@ import {
     where,
     query,
     orderBy,
+    getDocs
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, onMounted, watch } from "vue";
@@ -153,6 +157,8 @@ const rooms = ref([
     { name: 'Ruang 4', code: '4' },
     { name: 'Ruang 5', code: '5' }
 ]);
+
+const teamsInRoom = ref();
 
 // Firebase configuration
 const firebaseConfig = {
@@ -211,12 +217,41 @@ const shopResponses = ref();
 watch(selectedRoom, (selected) => {
   if (selected !== null && selected !== '') {
     queryResponses(selected.code);
+    queryTeams(selected.code);
   }
 });
 
+const addBalanceAmount = ref(0);
+const selectedTeam = ref();
+    
+const queryTeams = async (selected) => {
+    const q_teams = query(collection(db, "users"), where("ruang", "==", selected));
+    
+    const qSnap = await getDocs(q_teams);
+    const data = qSnap.docs.map(doc => doc.data());
+    const teamNames = data.map(team => ({
+        id: team.id,
+        team_name: team.team_name
+    }));
+
+    console.log("team query:",teamNames);
+    teamsInRoom.value = teamNames;
+}
+
+const addBalance = () => {
+//     try {
+//     let balanceRef = doc(db, "users", uid.value);
+//     await updateDoc(balanceRef, {
+//         balance : increment(addBalanceAmount.value),
+//     });
+//   } catch (e) {
+//     console.error("Error adding neleci :", e);
+}
+
 let unsubscribeSoal;
-let unsubscribePoints;
 let unsubscribeShop;
+let unsubscribePoints;
+
 
 const queryResponses = (selected) => {
     console.log("querying selected: ",selected);

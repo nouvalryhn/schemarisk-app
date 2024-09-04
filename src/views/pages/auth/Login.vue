@@ -77,7 +77,7 @@ const handleLogin = () => {
                             <router-link to="/register">Daftar dulu disini (sementara)</router-link>
                         </div>
 
-                        <p v-if="errmsg">{{ errmsg }}</p>
+                        <p class="text-red-600" v-if="errmsg">{{ errmsg }}</p>
                         <Button type="submit" label="Sign In"></Button>
                         </div>
                     </form>
