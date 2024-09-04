@@ -82,10 +82,10 @@
                     </Column>
                     <Column field="jawaban" header="Jawaban" style="min-width: 100px">
                         <template #body="slotProps">
-                            <p>Wil 1: {{ slotProps.data.wil_1 }} Wil 2: {{ slotProps.data.wil_5 }}</p>
-                            <p>Wil 3: {{ slotProps.data.wil_2 }} Wil 4: {{ slotProps.data.wil_6 }}</p>
-                            <p>Wil 5: {{ slotProps.data.wil_3 }} Wil 6: {{ slotProps.data.wil_7 }}</p>
-                            <p>Wil 7: {{ slotProps.data.wil_4 }}</p>
+                            <p>Wil 1: {{ slotProps.data.wil_1 }} Wil 2: {{ slotProps.data.wil_2 }}</p>
+                            <p>Wil 3: {{ slotProps.data.wil_3 }} Wil 4: {{ slotProps.data.wil_4 }}</p>
+                            <p>Wil 5: {{ slotProps.data.wil_5 }} Wil 6: {{ slotProps.data.wil_6 }}</p>
+                            <p>Wil 7: {{ slotProps.data.wil_7 }}</p>
                         </template>
                     </Column>
                 </DataTable>
@@ -223,7 +223,7 @@ watch(selectedRoom, (selected) => {
 
 const addBalanceAmount = ref(0);
 const selectedTeam = ref();
-    
+
 const queryTeams = async (selected) => {
     const q_teams = query(collection(db, "users"), where("ruang", "==", selected));
     
