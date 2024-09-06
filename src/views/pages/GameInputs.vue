@@ -246,7 +246,10 @@ const recentActions = ref([]);
 const showForm = ref(null);
 const activeButton = ref();
 const buttons = [
-  { label: "Jawab Soal", icon: "pi pi-pencil", id: "jawab-soal" },
+  { label: "Jawab Soal", 
+    icon: "pi pi-pencil", 
+    id: "jawab-soal" 
+  },
   {
     label: "Bagi Poin Wilayahmu",
     icon: "pi pi-map-marker",
@@ -256,6 +259,16 @@ const buttons = [
     label: "Belanja Troops",
     icon: "pi pi-shopping-cart",
     id: "belanja-troops",
+  },
+  {
+    label: "Place Your Troops",
+    icon: "pi pi-home",
+    id: "place-troops",
+  },
+  {
+    label: "Hajar Wilayah",
+    icon: "pi pi-home",
+    id: "hajar-lur",
   },
 ];
 

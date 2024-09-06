@@ -1,6 +1,6 @@
 <template>
 
-    <div class="flex flex-col md:flex-row gap-8">
+    <div class="flex flex-col md:flex-row gap-8 mb-6">
         <div class="md:w-1/2">
             <div class="card">
                 <div class="font-bold text-xl mb-4">Admin Detail</div>
@@ -10,22 +10,35 @@
                 <br>
                 <div>
                     <label for="room" class="block text-lg">Select Room to Show</label>
-                    <Select id="room" :options="rooms" optionLabel="name" class="w-full md:w-[15rem]"
+                    <Select id="room" :options="rooms" optionLabel="name" class="w-full md:w-[15rem]" showClear
                         placeholder="Pilih Ruangan" v-model="selectedRoom" />
                 </div>
             </div>
         </div>
 
+
         <div class="md:w-1/2">
             <div class="card">
                 <div class="font-bold text-xl mb-4">Panel Admin</div>
 
-                <div class="font-bold mb-6">
-                <p>Tambah Neleci</p>
+                <div class="font-bold mb-2">
+                    <p>Ubah Neleci</p>
 
-                <Select :options="teamsInRoom" v-model="selectedTeam" class="w-full mb-2"></Select>
-                <InputNumber v-model="addBalanceAmount" class="w-full mb-2" />
-                <Button label="GAS" @click="addBalance"></Button>
+                    <div v-if="selectedRoom">
+                        <select v-model="selectedTeam">
+                            <option value="" disabled>Pilih Tim</option>
+                            <option v-for="team in teamsInRoom" :key="team.team_name" :value="team">
+                                {{ team.team_name }}
+                            </option>
+                        </select>
+
+                        <div v-if="selectedTeam">
+                            <p>Update Tim : {{ selectedTeam.team_name }}</p>
+                            <InputNumber v-model="addBalanceAmount" class="w-[15rem] mr-2 mb-2" />
+                            <Button label="GAS" @click="addBalance"></Button>
+                        </div>
+                    </div>
+
                 </div>
 
                 <p>Ganti Warna Wilayah</p>
@@ -34,6 +47,34 @@
             </div>
         </div>
 
+    </div>
+
+    <div class="card mt-6">
+        <div class="font-bold text-xl mb-4">
+            Team Stats
+            <p class="font-normal text-lg">Showing stats for room : </p>
+            <p v-if="selectedRoom"> {{ selectedRoom.name }} </p>
+            <p v-else >-</p>
+        </div>
+
+        <div v-if="selectedRoom">
+            <DataTable :value="teamsInRoom" scrollable scrollHeight="800px" class="mt-6">
+                <template #empty>
+                    Tidak ada riwayat.
+                </template>
+                <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
+                </Column>
+
+                <Column header="Stats" style="min-width: 100px">
+                    <template #body="slotProps">
+                        <p>Neleci Balance : {{ slotProps.data.balance }}</p>
+                        <p>Elsi : {{ slotProps.data.elsi_bal }}</p>
+                        <p>Pisi: {{ slotProps.data.pisi_bal }}</p>
+                        <p>Esti: {{ slotProps.data.esti_bal }}</p>
+                    </template>
+                </Column>
+            </DataTable>
+        </div>
     </div>
 
     <div class="mt-6">
@@ -213,12 +254,11 @@ const soalResponses = ref();
 const pointsResponses = ref();
 const shopResponses = ref();
 
-
-watch(selectedRoom, (selected) => {
-  if (selected !== null && selected !== '') {
-    queryResponses(selected.code);
-    queryTeams(selected.code);
-  }
+watch(selectedRoom, async (selected) => {
+    if (selected !== null && selected !== '') {
+        await queryResponses(selected.code);
+        await queryTeams(selected.code);
+    }
 });
 
 const addBalanceAmount = ref(0);
@@ -226,84 +266,86 @@ const selectedTeam = ref();
 
 const queryTeams = async (selected) => {
     const q_teams = query(collection(db, "users"), where("ruang", "==", selected));
-    
+
     const qSnap = await getDocs(q_teams);
-    const data = qSnap.docs.map(doc => doc.data());
-    const teamNames = data.map(team => ({
-        id: team.id,
-        team_name: team.team_name
-    }));
+    const data = await qSnap.docs.map(doc => doc.data());
 
-    console.log("team query:",teamNames);
-    teamsInRoom.value = teamNames;
+    console.log("team query:", data);
+    teamsInRoom.value = data;
+    selectedTeam.value = null;
 }
 
-const addBalance = () => {
-//     try {
-//     let balanceRef = doc(db, "users", uid.value);
-//     await updateDoc(balanceRef, {
-//         balance : increment(addBalanceAmount.value),
-//     });
-//   } catch (e) {
-//     console.error("Error adding neleci :", e);
-}
+const addBalance = async () => {
+        try {
+        let balanceRef = doc(db, "users", uid.value);
+        await updateDoc(balanceRef, {
+            balance : increment(addBalanceAmount.value),
+        });
+      } catch (e) {
+        console.error("Error adding neleci :", e);
+}}
 
 let unsubscribeSoal;
 let unsubscribeShop;
 let unsubscribePoints;
 
-
 const queryResponses = (selected) => {
-    console.log("querying selected: ",selected);
-    const q_soal = query(collection(db, "response-soal"), where("ruang", "==", selected),orderBy("timestamp", "desc"));
+    console.log("querying selected: ", selected);
+    const q_soal = query(collection(db, "response-soal"), where("ruang", "==", selected), orderBy("timestamp", "desc"));
     const q_points = query(collection(db, "response-points"), where("ruang", "==", selected), orderBy("timestamp", "desc"));
-    const q_shop = query(collection(db, "response-shop"), where("ruang", "==", selected),orderBy("timestamp", "desc"));
+    const q_shop = query(collection(db, "response-shop"), where("ruang", "==", selected), orderBy("timestamp", "desc"));
 
     unsubscribeSoal = onSnapshot(q_soal, (snapshot) => {
-    const data = snapshot.docs.map(doc => doc.data());
-    console.log('response-soal data:', data);
-    soalResponses.value = data;
+        const data = snapshot.docs.map(doc => doc.data());
+        console.log('response-soal data:', data);
+        soalResponses.value = data;
     });
 
     unsubscribePoints = onSnapshot(q_points, (snapshot) => {
-    const data = snapshot.docs.map(doc => doc.data());
-    console.log('response-points data:', data);
-    pointsResponses.value = data;
+        const data = snapshot.docs.map(doc => doc.data());
+        console.log('response-points data:', data);
+        pointsResponses.value = data;
     });
 
     unsubscribeShop = onSnapshot(q_shop, (snapshot) => {
-    const data = snapshot.docs.map(doc => doc.data());
-    console.log('response-shop data:', data);
-    shopResponses.value = data;
+        const data = snapshot.docs.map(doc => doc.data());
+        console.log('response-shop data:', data);
+        shopResponses.value = data;
     });
 };
 
 const convertFirestoreTimestampToDate = (timestamp) => {
-  if (timestamp && timestamp.seconds) {
-    return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
-  }
-  return null;
+    if (timestamp && timestamp.seconds) {
+        return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+    }
+    return null;
 };
 
 const formatDateToLocal = (timestamp) => {
-  try {
-    const date = convertFirestoreTimestampToDate(timestamp);
-    if (date) {
-      return new Intl.DateTimeFormat(navigator.language, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-      }).format(date);
-    } else {
-      return 'Invalid Date';
+    try {
+        const date = convertFirestoreTimestampToDate(timestamp);
+        if (date) {
+            return new Intl.DateTimeFormat(navigator.language, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }).format(date);
+        } else {
+            return 'Invalid Date';
+        }
+    } catch (error) {
+        console.error('Date formatting error:', error);
+        return 'Invalid Date';
     }
-  } catch (error) {
-    console.error('Date formatting error:', error);
-    return 'Invalid Date';
-  }
 };
+
+onMounted( () => {
+    if (unsubscribeSoal) unsubscribeSoal();
+    if (unsubscribePoints) unsubscribePoints();
+    if (unsubscribeShop) unsubscribeShop();
+}) 
 
 </script>
