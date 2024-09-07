@@ -140,6 +140,7 @@
           >
           <div class="col-span-12 md:col-span-10">
             <InputNumber id="name3" type="text" v-model="elsi_amount" />
+            <Select :options="elsi_options" ></Select>
           </div>
         </div>
         <div class="grid grid-cols-12 gap-2">

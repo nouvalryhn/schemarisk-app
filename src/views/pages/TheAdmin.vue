@@ -65,9 +65,17 @@
                 <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
                 </Column>
 
-                <Column header="Stats" style="min-width: 100px">
+                <Column header="Balance" style="min-width: 100px">
                     <template #body="slotProps">
-                        <p>Neleci Balance : {{ slotProps.data.balance }}</p>
+                        <p>Neleci : {{ slotProps.data.balance }}</p>
+                        <!-- <p>Elsi : {{ slotProps.data.elsi_bal }}</p>
+                        <p>Pisi: {{ slotProps.data.pisi_bal }}</p>
+                        <p>Esti: {{ slotProps.data.esti_bal }}</p> -->
+                    </template>
+                </Column>
+
+                <Column header="Troops" style="min-width: 200px;">
+                    <template #body="slotProps">
                         <p>Elsi : {{ slotProps.data.elsi_bal }}</p>
                         <p>Pisi: {{ slotProps.data.pisi_bal }}</p>
                         <p>Esti: {{ slotProps.data.esti_bal }}</p>

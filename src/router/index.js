@@ -37,6 +37,12 @@ const router = createRouter({
                         requiresAdmin: true,
                     },
                 },
+                {
+                    path: '/map',
+                    name: 'map',
+                    component: () => import('@/views/pages/TheMap.vue'),
+                
+                },
             ]
         },
         //         {
