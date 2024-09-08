@@ -22,10 +22,11 @@
                 <div class="font-bold text-xl mb-4">Panel Admin</div>
 
                 <div class="font-bold mb-2">
-                    <p>Ubah Neleci</p>
+                    <p class="mb-2 text-lg">Update Atribut Tim</p>
 
                     <div v-if="selectedRoom">
-                        <select v-model="selectedTeam">
+                        Select Team: 
+                        <select v-model="selectedTeam" class="m-2">
                             <option value="" disabled>Pilih Tim</option>
                             <option v-for="team in teamsInRoom" :key="team.data.team_name" :value="team">
                                 {{ team.data.team_name }}
@@ -33,10 +34,20 @@
                         </select>
 
                         <div v-if="selectedTeam">
-                            <p>Update Tim : {{ selectedTeam.data.team_name }}</p>
-                            <p>{{ selectedTeam.id }}</p>
-                            <InputNumber v-model="addBalanceAmount" class="w-[15rem] mr-2 mb-2" />
-                            <Button label="GAS" @click="addBalance"></Button>
+                            <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2 mb-2" />
+                            <Button label="set Neleci" @click="setBalance"></Button>
+
+                            <InputNumber v-model="setElsiAmount" class="w-[15rem] mr-2 mb-2" />
+                            <Button label="set Elsi" @click="setElsi"></Button>
+
+                            <InputNumber v-model="setPisiAmount" class="w-[15rem] mr-2 mb-2" />
+                            <Button label="set Pisi" @click="setPisi"></Button>
+
+                            <InputNumber v-model="setEstiAmount" class="w-[15rem] mr-2 mb-2" />
+                            <Button label="set Esti" @click="setEsti"></Button>
+
+                            <p>Updating Tim : {{ selectedTeam.data.team_name }} <span class="font-normal italic">({{ selectedTeam.id }})</span></p>
+
                         </div>
                     </div>
 
@@ -66,7 +77,7 @@
                 <Column header="Team" style="min-width: 100px" class="font-bold">
                     <template #body="slotProps">
                         <p>{{ slotProps.data.data.team_name }}</p>
-                        <p>id: {{ slotProps.data.id }}</p>
+                        <p class="font-normal italic">{{ slotProps.data.id }}</p>
 
                     </template>
                 </Column>
@@ -95,7 +106,7 @@
         <div class="card">
             <div class="font-semibold text-xl mb-4">Submisi Jawab Soal</div>
             <div v-if="selectedRoom">
-                <DataTable :value="soalResponses" scrollable scrollHeight="400px" class="mt-6">
+                <DataTable :value="soalResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
@@ -123,7 +134,7 @@
         <div class="card">
             <div class="font-semibold text-xl mb-4">Submisi Bagi Wilayah</div>
             <div v-if="selectedRoom">
-                <DataTable :value="pointsResponses" scrollable scrollHeight="400px" class="mt-6">
+                <DataTable :value="pointsResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
@@ -152,7 +163,7 @@
         <div class="card">
             <div class="font-semibold text-xl mb-4">Submisi Belanja Troops</div>
             <div v-if="selectedRoom">
-                <DataTable :value="shopResponses" scrollable scrollHeight="400px" class="mt-6">
+                <DataTable :value="shopResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
@@ -272,10 +283,15 @@ watch(selectedRoom, async (selected) => {
     if (selected !== null && selected !== '') {
         await queryResponses(selected.code);
         await queryTeams(selected.code);
+        selectedTeam.value = null;
     }
 });
 
-const addBalanceAmount = ref(0);
+const setBalanceAmount = ref(0);
+const setElsiAmount = ref(0);
+const setPisiAmount = ref(0);
+const setEstiAmount = ref(0);
+
 const selectedTeam = ref();
 
 const documents = ref([]);
@@ -318,20 +334,53 @@ const queryTeams = async (selected) => {
         console.error("Error listening to documents: ", error);
       });
 
-      // Return the unsubscribe function to stop listening when needed
       return unsubscribe;
 }
 
-const addBalance = async () => {
+const setBalance = async () => {
         try {
-            console.log("attempt to update neleci uid:", selectedTeam.value.id, "amount: ", addBalanceAmount.value)
+            console.log("attempt to update neleci uid:", selectedTeam.value.id, "amount: ", setBalanceAmount.value)
             let balanceRef = doc(db, "users", selectedTeam.value.id);
             await updateDoc(balanceRef, {
-                balance : (addBalanceAmount.value),
+                balance : (setBalanceAmount.value),
             });
       } catch (e) {
-        console.error("Error adding neleci :", e);
+        console.error("Error setting neleci :", e);
 }}
+
+const setElsi = async () => {
+        try {
+            console.log("attempt to update Elsi uid:", selectedTeam.value.id, "amount: ", setElsiAmount.value)
+            let balanceRef = doc(db, "users", selectedTeam.value.id);
+            await updateDoc(balanceRef, {
+                elsi_bal : (setElsiAmount.value),
+            });
+      } catch (e) {
+        console.error("Error setting Elsi :", e);
+}}
+
+const setPisi = async () => {
+        try {
+            console.log("attempt to update Pisi uid:", selectedTeam.value.id, "amount: ", setPisiAmount.value)
+            let balanceRef = doc(db, "users", selectedTeam.value.id);
+            await updateDoc(balanceRef, {
+                pisi_bal : (setPisiAmount.value),
+            });
+      } catch (e) {
+        console.error("Error setting Pisi :", e);
+}}
+
+const setEsti = async () => {
+        try {
+            console.log("attempt to update Esti uid:", selectedTeam.value.id, "amount: ", setEstiAmount.value)
+            let balanceRef = doc(db, "users", selectedTeam.value.id);
+            await updateDoc(balanceRef, {
+                esti_bal : (setEstiAmount.value),
+            });
+      } catch (e) {
+        console.error("Error setting Esti :", e);
+}}
+
 
 let unsubscribeSoal;
 let unsubscribeShop;
