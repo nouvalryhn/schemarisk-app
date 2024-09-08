@@ -4,7 +4,7 @@
 
         <Button label="fill map white" @click="generateMap"></Button>
 
-        <p>Map State : {{ mapState }}</p>
+        <p v-if="mapState" >Map State : {{ mapState[0].state }}</p>
     </div>
 </template>
 
