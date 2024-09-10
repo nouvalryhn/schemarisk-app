@@ -33,29 +33,33 @@
                             </option>
                         </select>
 
-                        <div v-if="selectedTeam">
-                            <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2 mb-2" />
-                            <Button label="set Neleci" @click="setBalance"></Button>
+                        <div v-if="selectedTeam" class="flex flex-col gap-2">
+                            <div>
+                                <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2" />
+                                <Button label="set Neleci" @click="setBalance"></Button>
+                            </div>
+                            
+                            <div>
+                                <InputNumber v-model="setElsiAmount" class="w-[15rem] mr-2" />
+                                <Button label="set Elsi" @click="setElsi"></Button>
+                            </div>
+                            
+                            <div>
+                                <InputNumber v-model="setPisiAmount" class="w-[15rem] mr-2" />
+                                <Button label="set Pisi" @click="setPisi"></Button>
+                            </div> 
 
-                            <InputNumber v-model="setElsiAmount" class="w-[15rem] mr-2 mb-2" />
-                            <Button label="set Elsi" @click="setElsi"></Button>
-
-                            <InputNumber v-model="setPisiAmount" class="w-[15rem] mr-2 mb-2" />
-                            <Button label="set Pisi" @click="setPisi"></Button>
-
-                            <InputNumber v-model="setEstiAmount" class="w-[15rem] mr-2 mb-2" />
-                            <Button label="set Esti" @click="setEsti"></Button>
+                            <div>
+                                <InputNumber v-model="setEstiAmount" class="w-[15rem] mr-2" />
+                                <Button label="set Esti" @click="setEsti"></Button>
+                            </div>
+                            
 
                             <p>Updating Tim : {{ selectedTeam.data.team_name }} <span class="font-normal italic">({{ selectedTeam.id }})</span></p>
 
                         </div>
                     </div>
-
                 </div>
-
-                <p>Ganti Warna Wilayah</p>
-                <p>BLOM</p>
-
             </div>
         </div>
 
