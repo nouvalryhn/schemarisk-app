@@ -22,28 +22,44 @@
                 <div class="font-bold text-xl mb-4">Panel Admin</div>
 
                 <div class="font-bold mb-2">
-                    <p>Ubah Neleci</p>
+                    <p class="mb-2 text-lg">Update Atribut Tim</p>
 
                     <div v-if="selectedRoom">
-                        <select v-model="selectedTeam">
+                        Select Team: 
+                        <select v-model="selectedTeam" class="m-2">
                             <option value="" disabled>Pilih Tim</option>
-                            <option v-for="team in teamsInRoom" :key="team.team_name" :value="team">
-                                {{ team.team_name }}
+                            <option v-for="team in teamsInRoom" :key="team.data.team_name" :value="team">
+                                {{ team.data.team_name }}
                             </option>
                         </select>
 
-                        <div v-if="selectedTeam">
-                            <p>Update Tim : {{ selectedTeam.team_name }}</p>
-                            <InputNumber v-model="addBalanceAmount" class="w-[15rem] mr-2 mb-2" />
-                            <Button label="GAS" @click="addBalance"></Button>
+                        <div v-if="selectedTeam" class="flex flex-col gap-2">
+                            <div>
+                                <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2" />
+                                <Button label="set Neleci" @click="setBalance"></Button>
+                            </div>
+                            
+                            <div>
+                                <InputNumber v-model="setElsiAmount" class="w-[15rem] mr-2" />
+                                <Button label="set Elsi" @click="setElsi"></Button>
+                            </div>
+                            
+                            <div>
+                                <InputNumber v-model="setPisiAmount" class="w-[15rem] mr-2" />
+                                <Button label="set Pisi" @click="setPisi"></Button>
+                            </div> 
+
+                            <div>
+                                <InputNumber v-model="setEstiAmount" class="w-[15rem] mr-2" />
+                                <Button label="set Esti" @click="setEsti"></Button>
+                            </div>
+                            
+
+                            <p>Updating Tim : {{ selectedTeam.data.team_name }} <span class="font-normal italic">({{ selectedTeam.id }})</span></p>
+
                         </div>
                     </div>
-
                 </div>
-
-                <p>Ganti Warna Wilayah</p>
-                <p>BLOM</p>
-
             </div>
         </div>
 
@@ -62,12 +78,17 @@
                 <template #empty>
                     Tidak ada riwayat.
                 </template>
-                <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
+                <Column header="Team" style="min-width: 100px" class="font-bold">
+                    <template #body="slotProps">
+                        <p>{{ slotProps.data.data.team_name }}</p>
+                        <p class="font-normal italic">{{ slotProps.data.id }}</p>
+
+                    </template>
                 </Column>
 
                 <Column header="Balance" style="min-width: 100px">
                     <template #body="slotProps">
-                        <p>Neleci : {{ slotProps.data.balance }}</p>
+                        <p>Neleci : {{ slotProps.data.data.balance }}</p>
                         <!-- <p>Elsi : {{ slotProps.data.elsi_bal }}</p>
                         <p>Pisi: {{ slotProps.data.pisi_bal }}</p>
                         <p>Esti: {{ slotProps.data.esti_bal }}</p> -->
@@ -76,9 +97,9 @@
 
                 <Column header="Troops" style="min-width: 200px;">
                     <template #body="slotProps">
-                        <p>Elsi : {{ slotProps.data.elsi_bal }}</p>
-                        <p>Pisi: {{ slotProps.data.pisi_bal }}</p>
-                        <p>Esti: {{ slotProps.data.esti_bal }}</p>
+                        <p>Elsi : {{ slotProps.data.data.elsi_bal }}</p>
+                        <p>Pisi: {{ slotProps.data.data.pisi_bal }}</p>
+                        <p>Esti: {{ slotProps.data.data.esti_bal }}</p>
                     </template>
                 </Column>
             </DataTable>
@@ -89,7 +110,7 @@
         <div class="card">
             <div class="font-semibold text-xl mb-4">Submisi Jawab Soal</div>
             <div v-if="selectedRoom">
-                <DataTable :value="soalResponses" scrollable scrollHeight="400px" class="mt-6">
+                <DataTable :value="soalResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
@@ -117,7 +138,7 @@
         <div class="card">
             <div class="font-semibold text-xl mb-4">Submisi Bagi Wilayah</div>
             <div v-if="selectedRoom">
-                <DataTable :value="pointsResponses" scrollable scrollHeight="400px" class="mt-6">
+                <DataTable :value="pointsResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
@@ -146,7 +167,7 @@
         <div class="card">
             <div class="font-semibold text-xl mb-4">Submisi Belanja Troops</div>
             <div v-if="selectedRoom">
-                <DataTable :value="shopResponses" scrollable scrollHeight="400px" class="mt-6">
+                <DataTable :value="shopResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
@@ -188,7 +209,7 @@ import {
     where,
     query,
     orderBy,
-    getDocs
+    getDocs,
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, onMounted, watch } from "vue";
@@ -266,32 +287,104 @@ watch(selectedRoom, async (selected) => {
     if (selected !== null && selected !== '') {
         await queryResponses(selected.code);
         await queryTeams(selected.code);
+        selectedTeam.value = null;
     }
 });
 
-const addBalanceAmount = ref(0);
+const setBalanceAmount = ref(0);
+const setElsiAmount = ref(0);
+const setPisiAmount = ref(0);
+const setEstiAmount = ref(0);
+
 const selectedTeam = ref();
 
+const documents = ref([]);
+
 const queryTeams = async (selected) => {
-    const q_teams = query(collection(db, "users"), where("ruang", "==", selected));
+    // const q_teams = query(collection(db, "users"), where("ruang", "==", selected));
 
-    const qSnap = await getDocs(q_teams);
-    const data = await qSnap.docs.map(doc => doc.data());
+    // const qSnap = await getDocs(q_teams);
+    // const data = await qSnap.docs.map(doc => doc.data());
 
-    console.log("team query:", data);
-    teamsInRoom.value = data;
-    selectedTeam.value = null;
+    // console.log("team query:", data);
+    // teamsInRoom.value = data;
+    // selectedTeam.value = null;
+
+    // try {
+    //   const q = query(collection(db, 'users'), where('ruang', '==', selected));
+    //   const querySnapshot = await getDocs(q);
+    //   documents.value = querySnapshot.docs.map(doc => ({
+    //     id: doc.id,
+    //     data: doc.data()
+    //   }));
+    //   teamsInRoom.value = documents.value;
+    //   selectedTeam.value = null;
+      
+    //   console.log("team in room:", teamsInRoom.value);
+    // } catch (error) {
+    //   console.error("Error getting documents: ", error);
+    // }
+
+    const q = query(collection(db, 'users'), where('ruang', '==', selected));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        documents.value = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          data: doc.data()
+        }));
+        teamsInRoom.value = documents.value;
+
+        console.log("team in room:", teamsInRoom.value);
+      }, (error) => {
+        console.error("Error listening to documents: ", error);
+      });
+
+      return unsubscribe;
 }
 
-const addBalance = async () => {
+const setBalance = async () => {
         try {
-        let balanceRef = doc(db, "users", uid.value);
-        await updateDoc(balanceRef, {
-            balance : increment(addBalanceAmount.value),
-        });
+            console.log("attempt to update neleci uid:", selectedTeam.value.id, "amount: ", setBalanceAmount.value)
+            let balanceRef = doc(db, "users", selectedTeam.value.id);
+            await updateDoc(balanceRef, {
+                balance : (setBalanceAmount.value),
+            });
       } catch (e) {
-        console.error("Error adding neleci :", e);
+        console.error("Error setting neleci :", e);
 }}
+
+const setElsi = async () => {
+        try {
+            console.log("attempt to update Elsi uid:", selectedTeam.value.id, "amount: ", setElsiAmount.value)
+            let balanceRef = doc(db, "users", selectedTeam.value.id);
+            await updateDoc(balanceRef, {
+                elsi_bal : (setElsiAmount.value),
+            });
+      } catch (e) {
+        console.error("Error setting Elsi :", e);
+}}
+
+const setPisi = async () => {
+        try {
+            console.log("attempt to update Pisi uid:", selectedTeam.value.id, "amount: ", setPisiAmount.value)
+            let balanceRef = doc(db, "users", selectedTeam.value.id);
+            await updateDoc(balanceRef, {
+                pisi_bal : (setPisiAmount.value),
+            });
+      } catch (e) {
+        console.error("Error setting Pisi :", e);
+}}
+
+const setEsti = async () => {
+        try {
+            console.log("attempt to update Esti uid:", selectedTeam.value.id, "amount: ", setEstiAmount.value)
+            let balanceRef = doc(db, "users", selectedTeam.value.id);
+            await updateDoc(balanceRef, {
+                esti_bal : (setEstiAmount.value),
+            });
+      } catch (e) {
+        console.error("Error setting Esti :", e);
+}}
+
 
 let unsubscribeSoal;
 let unsubscribeShop;
