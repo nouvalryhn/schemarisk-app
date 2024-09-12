@@ -10,6 +10,7 @@
     "dependencies": {
         "@primevue/themes": "^4.0.0",
         "chart.js": "3.3.2",
+        "element-plus": "^2.8.2",
         "firebase": "^10.13.0",
         "primeicons": "^6.0.1",
         "primevue": "^4.0.0",
