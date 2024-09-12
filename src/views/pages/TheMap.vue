@@ -269,11 +269,177 @@
                 <text :x="1280" :y="880" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
                     {{ mapState.B1.poin_wilayah }} + {{ mapState.B1.poin_troops }}</text>
 
-                <text :x="1450" :y="1000" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                <text :x="1425" :y="1000" font-family="Arial" font-size="40" font-weight="bold" fill="white"
                     text-anchor="middle">B2</text>
-                <text :x="1450" :y="1030" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                <text :x="1425" :y="1030" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
                     {{ mapState.B2.poin_wilayah }} + {{ mapState.B2.poin_troops }}</text>
 
+                <text :x="1800" :y="950" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">B3</text>
+                <text :x="1800" :y="980" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.B3.poin_wilayah }} + {{ mapState.B3.poin_troops }}</text>
+
+                <text :x="1560" :y="820" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">B4</text>
+                <text :x="1560" :y="850" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.B4.poin_wilayah }} + {{ mapState.B4.poin_troops }}</text>
+
+                <text :x="1560" :y="620" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">B5</text>
+                <text :x="1560" :y="650" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.B5.poin_wilayah }} + {{ mapState.B5.poin_troops }}</text>
+                
+                <text :x="1530" :y="350" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">B6</text>
+                <text :x="1530" :y="380" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.B6.poin_wilayah }} + {{ mapState.B6.poin_troops }}</text>
+
+                <text :x="1850" :y="600" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">B7</text>
+                <text :x="1850" :y="630" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.B7.poin_wilayah }} + {{ mapState.B6.poin_troops }}</text>
+
+                <text :x="1400" :y="1170" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">C1</text>
+                <text :x="1400" :y="1200" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.C1.poin_wilayah }} + {{ mapState.C1.poin_troops }}</text>
+
+                <text :x="1400" :y="1350" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">C2</text>
+                <text :x="1400" :y="1380" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.C2.poin_wilayah }} + {{ mapState.C2.poin_troops }}</text>
+
+                <text :x="1600" :y="1300" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">C3</text>
+                <text :x="1600" :y="1330" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.C3.poin_wilayah }} + {{ mapState.C3.poin_troops }}</text>
+
+                <text :x="1750" :y="1400" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">C4</text>
+                <text :x="1750" :y="1430" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.C4.poin_wilayah }} + {{ mapState.C4.poin_troops }}</text>
+
+                <text :x="1850" :y="1130" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">C5</text>
+                <text :x="1850" :y="1160" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.C5.poin_wilayah }} + {{ mapState.C5.poin_troops }}</text>
+
+                <text :x="1620" :y="1650" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">C6</text>
+                <text :x="1620" :y="1680" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.C6.poin_wilayah }} + {{ mapState.C6.poin_troops }}</text>
+
+                <text :x="1900" :y="1450" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">C7</text>
+                <text :x="1900" :y="1480" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.C7.poin_wilayah }} + {{ mapState.C7.poin_troops }}</text>
+
+                <text :x="1150" :y="1350" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">D1</text>
+                <text :x="1150" :y="1380" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.D1.poin_wilayah }} + {{ mapState.D1.poin_troops }}</text>
+
+                <text :x="960" :y="1370" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">D2</text>
+                <text :x="960" :y="1400" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.D2.poin_wilayah }} + {{ mapState.D2.poin_troops }}</text>
+
+                <text :x="700" :y="1700" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">D3</text>
+                <text :x="700" :y="1730" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.D3.poin_wilayah }} + {{ mapState.D3.poin_troops }}</text>
+
+                <text :x="960" :y="1700" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">D4</text>
+                <text :x="960" :y="1730" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.D4.poin_wilayah }} + {{ mapState.D4.poin_troops }}</text>
+
+                <text :x="1180" :y="1620" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">D5</text>
+                <text :x="1180" :y="1650" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.D5.poin_wilayah }} + {{ mapState.D5.poin_troops }}</text>
+
+                <text :x="1020" :y="1950" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">D6</text>
+                <text :x="1020" :y="1980" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.D6.poin_wilayah }} + {{ mapState.D6.poin_troops }}</text>
+
+                <text :x="1450" :y="1750" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">D7</text>
+                <text :x="1450" :y="1780" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.D7.poin_wilayah }} + {{ mapState.D7.poin_troops }}</text>
+
+                <text :x="780" :y="1300" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">E1</text>
+                <text :x="780" :y="1330" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.E1.poin_wilayah }} + {{ mapState.E1.poin_troops }}</text>
+
+                <text :x="690" :y="1120" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">E2</text>
+                <text :x="690" :y="1150" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.E2.poin_wilayah }} + {{ mapState.E2.poin_troops }}</text>
+
+                <text :x="460" :y="1190" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">E3</text>
+                <text :x="460" :y="1220" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.E3.poin_wilayah }} + {{ mapState.E3.poin_troops }}</text>
+
+                <text :x="450" :y="1380" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">E4</text>
+                <text :x="450" :y="1410" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.E4.poin_wilayah }} + {{ mapState.E4.poin_troops }}</text>
+
+                <text :x="170" :y="1190" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">E5</text>
+                <text :x="170" :y="1220" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.E5.poin_wilayah }} + {{ mapState.E5.poin_troops }}</text>
+
+                <text :x="230" :y="1500" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">E6</text>
+                <text :x="230" :y="1530" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.E6.poin_wilayah }} + {{ mapState.E6.poin_troops }}</text>
+
+                <text :x="495" :y="1600" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">E7</text>
+                <text :x="495" :y="1630" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.E7.poin_wilayah }} + {{ mapState.E7.poin_troops }}</text>
+
+                <text :x="700" :y="1000" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">F1</text>
+                <text :x="700" :y="1030" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.F1.poin_wilayah }} + {{ mapState.F1.poin_troops }}</text>
+
+                <text :x="750" :y="880" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">F2</text>
+                <text :x="750" :y="910" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.F2.poin_wilayah }} + {{ mapState.F2.poin_troops }}</text>
+
+                <text :x="520" :y="890" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">F3</text>
+                <text :x="520" :y="920" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.F3.poin_wilayah }} + {{ mapState.F3.poin_troops }}</text>
+
+                <text :x="540" :y="550" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">F4</text>
+                <text :x="540" :y="580" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.F4.poin_wilayah }} + {{ mapState.F4.poin_troops }}</text>
+
+                <text :x="420" :y="670" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">F5</text>
+                <text :x="420" :y="700" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.F5.poin_wilayah }} + {{ mapState.F5.poin_troops }}</text>
+
+                <text :x="250" :y="950" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">F6</text>
+                <text :x="250" :y="980" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.F6.poin_wilayah }} + {{ mapState.F6.poin_troops }}</text>
+
+                <text :x="200" :y="670" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">F7</text>
+                <text :x="200" :y="700" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.F7.poin_wilayah }} + {{ mapState.F7.poin_troops }}</text>
+                
+                
             </svg>
 
         </div>
