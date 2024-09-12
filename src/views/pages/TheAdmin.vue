@@ -291,6 +291,7 @@ watch(selectedRoom, async (selected) => {
     }
 });
 
+
 const setBalanceAmount = ref(0);
 const setElsiAmount = ref(0);
 const setPisiAmount = ref(0);
@@ -299,6 +300,16 @@ const setEstiAmount = ref(0);
 const selectedTeam = ref();
 
 const documents = ref([]);
+
+watch(selectedTeam, () =>{
+    if (selectedTeam.value){
+        console.log(selectedTeam.value);
+        setBalanceAmount.value = selectedTeam.value.data.balance;
+        setElsiAmount.value = selectedTeam.value.data.elsi_bal;
+        setPisiAmount.value = selectedTeam.value.data.pisi_bal;
+        setEstiAmount.value = selectedTeam.value.data.esti_bal;
+    }
+})
 
 const queryTeams = async (selected) => {
     // const q_teams = query(collection(db, "users"), where("ruang", "==", selected));
