@@ -268,6 +268,12 @@
                     text-anchor="middle">B1</text>
                 <text :x="1280" :y="880" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
                     {{ mapState.B1.poin_wilayah }} + {{ mapState.B1.poin_troops }}</text>
+
+                <text :x="1450" :y="1000" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                    text-anchor="middle">B2</text>
+                <text :x="1450" :y="1030" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                    {{ mapState.B2.poin_wilayah }} + {{ mapState.B2.poin_troops }}</text>
+
             </svg>
 
         </div>
