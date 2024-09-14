@@ -39,13 +39,13 @@
     </div>
 
     <div class="card" v-if="mapState">
-        <div class="text-lg font-bold">
+        <div class="text-lg font-bold mb-4">
             <p>Map View</p>
-
         </div>
 
-        <div id="map" class=" flex justify-center">
-            <svg width="720" height="720" viewBox="0 0 2085 2085" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- <div id="map" class=" flex justify-center"> -->
+            <div class="map-container flex justify-center" style="width: 100%; height: 80vh; overflow: hidden; border-radius: 1rem; border: 2px solid grey; background-color: white;">
+            <svg ref="svgMap" id="mapSvg" class="w-full h-full"viewBox="0 0 2100 2100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M410.176 1869.46C161.763 1679.22 1.56291 1379.58 1.56291 1042.52C1.56291 1041.84 1.56356 1041.16 1.56486 1040.48C102.395 1030.74 145.655 1030.93 212.251 1031.22C224.434 1031.28 237.397 1031.33 251.636 1031.33C312.842 1031.33 386.114 1035.27 461.584 1039.31C468.842 1039.7 476.121 1040.09 483.411 1040.48C603.258 1033.24 697.868 1043.95 810.53 1056.69C840.253 1060.05 871.233 1063.56 904.265 1066.91C904.265 1092.33 910.364 1162.47 948.993 1162.47C948.993 1162.47 904.265 1230.58 885.967 1318C865.02 1335.6 854.087 1355.61 842.922 1376.05C826.994 1405.2 810.594 1435.22 763.98 1460.32C684.689 1503.02 624.712 1539.61 577.95 1602.64C531.189 1665.67 500.692 1736.82 482.394 1789.69C468.18 1830.75 427.587 1858.93 410.176 1869.46Z"
                     fill="white" stroke="black" stroke-width="3" />
@@ -464,8 +464,7 @@ import {
     getDocs
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { ref, onMounted, watch, onUnmounted } from "vue";
-
+import { ref, onMounted, watch, onUnmounted, nextTick } from "vue";
 
 
 const firebaseConfig = {
@@ -481,19 +480,42 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth();
 
-// const mapState = ref(null);
+const mapState = ref(null);
+const svgMap = ref(null);
 
 onMounted(() => {
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            setupMapListener("1");
-        } else {
-            uid.value = null;
-        }
-    });
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setupMapListener("1");
+    } else {
+      uid.value = null;
+    }
+  });
 });
 
-const mapState = ref(null);
+const initializeSvgPanZoom = () => {
+  nextTick(() => {
+    if (svgMap.value) {
+      console.log("Initializing svgPanZoom");
+      window.svgPanZoom(svgMap.value, {
+        zoomEnabled: true,
+        controlIconsEnabled: true,
+        fit: true,
+        center: true,
+      });
+    } else {
+      console.error("SVG element not found");
+    }
+  });
+};
+
+// Watch for changes in mapState
+watch(mapState, (newValue) => {
+  if (newValue) {
+    // Map data has been loaded, initialize svg-pan-zoom
+    initializeSvgPanZoom();
+  }
+});
 
 const updateColor = async (newColor) => {
     try{
@@ -559,7 +581,7 @@ const genRandomColor = (idx) => {
     //let colors = ["#ff595e", "#ff924c", "#ffca3a", "#8ac926", "#1982c4", "#6a4c93"]; // warna pastel pt 2
     //let colors = ["#ff0000", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff"]; // warna contrast
 
-    if (idx)
+    if (!idx)
         return colors[idx - 1];
     else {
         let randomIndex = Math.floor(Math.random() * colors.length);

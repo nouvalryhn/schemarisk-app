@@ -36,7 +36,8 @@ onMounted(() => {
             </p>
             <br>
             <div class=" font-semibold text-xl">Aturan Umum</div>
-            <ul class="space-y-1 text-black-500 list-disc dark:text-black-400">
+            
+            <ul class="space-y-1 text-black-500 list-disc dark:text-black-400 ml-4">
             <li>
                 Schemarisk adalah game semifinal di NLC 2024.
             </li>

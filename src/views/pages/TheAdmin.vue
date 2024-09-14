@@ -301,7 +301,7 @@ const selectedTeam = ref();
 
 const documents = ref([]);
 
-watch(selectedTeam, () =>{
+watch(selectedTeam, () => {
     if (selectedTeam.value){
         console.log(selectedTeam.value);
         setBalanceAmount.value = selectedTeam.value.data.balance;

@@ -84,31 +84,41 @@
       </div>
     </div>
     <div v-if="showForm === 'bagi-wilayah'">
-      <div class="flex flex-col gap-4">
-        <p>Bagikan poin yang kamu miliki ke wilayah-wilayahmu</p>
+      <p class="font-semibold text-xl">Bagikan poin yang kamu miliki ke wilayah-wilayahmu</p>
 
-        <div class="font-semibold text-xl">Poin Wilayah 1</div>
-        <InputNumber v-model="wilayah1" mode="decimal"></InputNumber>
+      <div class="flex flex-wrap mt-4">
+        <div class="w-full md:w-1/4 pr-4 pb-4">
+          <div class="font-semibold">Poin Wilayah 1</div>
+          <InputNumber v-model="wilayah1" mode="decimal" class="w-full"></InputNumber>
+        </div>
+        <div class="w-full md:w-1/4 pr-4 pb-4">
+          <div class="font-semibold">Poin Wilayah 2</div>
+          <InputNumber v-model="wilayah2" mode="decimal" class="w-full"></InputNumber>
+        </div>
+        <div class="w-full md:w-1/4 pr-4 pb-4">
+          <div class="font-semibold">Poin Wilayah 3</div>
+          <InputNumber v-model="wilayah3" mode="decimal" class="w-full"></InputNumber>
+        </div>
+        <div class="w-full md:w-1/4 pr-4 pb-4">
+          <div class="font-semibold">Poin Wilayah 4</div>
+          <InputNumber v-model="wilayah4" mode="decimal" class="w-full"></InputNumber>
+        </div>
+        <div class="w-full md:w-1/4 pr-4 pb-4">
+          <div class="font-semibold">Poin Wilayah 5</div>
+          <InputNumber v-model="wilayah5" mode="decimal" class="w-full"></InputNumber>
+        </div>
+        <div class="w-full md:w-1/4 pr-4 pb-4">
+          <div class="font-semibold">Poin Wilayah 6</div>
+          <InputNumber v-model="wilayah6" mode="decimal" class="w-full"></InputNumber>
+        </div>
+        <div class="w-full md:w-1/4 pr-4 pb-4">
+          <div class="font-semibold">Poin Wilayah 7</div>
+          <InputNumber v-model="wilayah7" mode="decimal" class="w-full"></InputNumber>
+        </div>
+        
+      </div>
 
-        <div class="font-semibold text-xl">Poin Wilayah 2</div>
-        <InputNumber v-model="wilayah2" mode="decimal"></InputNumber>
-
-        <div class="font-semibold text-xl">Poin Wilayah 3</div>
-        <InputNumber v-model="wilayah3" mode="decimal"></InputNumber>
-
-        <div class="font-semibold text-xl">Poin Wilayah 4</div>
-        <InputNumber v-model="wilayah4" mode="decimal"></InputNumber>
-
-        <div class="font-semibold text-xl">Poin Wilayah 5</div>
-        <InputNumber v-model="wilayah5" mode="decimal"></InputNumber>
-
-        <div class="font-semibold text-xl">Poin Wilayah 6</div>
-        <InputNumber v-model="wilayah6" mode="decimal"></InputNumber>
-
-        <div class="font-semibold text-xl">Poin Wilayah 7</div>
-        <InputNumber v-model="wilayah7" mode="decimal"></InputNumber>
-
-        <div class="font-semibold">
+      <div class="font-semibold">
           Total points spent :
           {{
             wilayah1 +
@@ -121,7 +131,6 @@
           }}
           out of 100
         </div>
-      </div>
       <br />
       <Button
         icon="pi pi-save"
@@ -132,15 +141,14 @@
     <div v-if="showForm === 'belanja-troops'">
       <div class="flex flex-col gap-4">
         <div class="font-semibold text-xl">Buy Troops Amount</div>
-        <p>Your Balance : {{ balance }}</p>
+        <!-- <Button class="w-1/4" label="debug" @click="console.log(buyElsiAmount,buyPisiAmount,buyEstiAmount)"></Button> -->
         <div class="grid grid-cols-12 gap-2">
           <label
             class="flex items-center col-span-12 mb-2 md:col-span-2 md:mb-0"
             >Elsi (15$)</label
           >
           <div class="col-span-12 md:col-span-10">
-            <InputNumber id="name3" type="text" v-model="elsi_amount" />
-            <Select :options="elsi_options" ></Select>
+            <Select :options="elsi_options" v-model="buyElsiAmount" optionLabel="label" optionValue="value"></Select>
           </div>
         </div>
         <div class="grid grid-cols-12 gap-2">
@@ -149,7 +157,7 @@
             >Pisi (10$)</label
           >
           <div class="col-span-12 md:col-span-10">
-            <InputNumber id="email3" type="text" v-model="pisi_amount" />
+            <Select :options="pisi_options" v-model="buyPisiAmount" optionLabel="label" optionValue="value"></Select>
           </div>
         </div>
         <div class="grid grid-cols-12 gap-2">
@@ -158,17 +166,32 @@
             >Esti (5$)</label
           >
           <div class="col-span-12 md:col-span-10">
-            <InputNumber id="email3" type="text" v-model="esti_amount" />
+            <Select :options="esti_options" v-model="buyEstiAmount" optionLabel="label" optionValue="value"></Select>
           </div>
         </div>
-        <p v-if="elsi_amount || pisi_amount || esti_amount">Total Belanja : {{ 15*elsi_amount + 10*pisi_amount + 5*esti_amount   }} neleci</p>
+
+        <div v-if="buyElsiAmount || buyPisiAmount || buyEstiAmount">
+          <p>Total Belanja : {{ 15*buyElsiAmount + 10*buyPisiAmount + 5*buyEstiAmount   }} neleci</p>
+          <p v-if="balance - (15*buyElsiAmount + 10*buyPisiAmount + 5*buyEstiAmount) < 0" class="text-red-500">
+            Balance : {{ balance }} &rarr; 
+            {{ balance - (15*buyElsiAmount + 10*buyPisiAmount + 5*buyEstiAmount) }}
+          </p>
+          <p v-else class="text-green-500">
+            Balance : {{ balance }} &rarr; 
+            {{ balance - (15*buyElsiAmount + 10*buyPisiAmount + 5*buyEstiAmount) }}
+          </p>
+        </div>
       </div>
       <br />
-      <Button
-        icon="pi pi-save"
-        label="Simpan Jawaban"
+      <Button v-if="balance - (15*buyElsiAmount + 10*buyPisiAmount + 5*buyEstiAmount) >= 0"
+        icon="pi pi-users"
+        label="Buy Troops"
         @click="SubmitShop"
       ></Button>
+    </div>
+
+    <div v-if="showForm === 'place-troops'">
+      <p>Letakkan troops yang kamu miliki ke wilayah-wilayahmu</p>
     </div>
   </div>
   <div class="card">
@@ -263,13 +286,13 @@ const buttons = [
   },
   {
     label: "Place Your Troops",
-    icon: "pi pi-home",
+    icon: "pi pi-users",
     id: "place-troops",
   },
   {
     label: "Hajar Wilayah",
-    icon: "pi pi-home",
-    id: "hajar-lur",
+    icon: "pi pi-map",
+    id: "serang-wilayah",
   },
 ];
 
@@ -284,9 +307,30 @@ const wilayah4 = ref(0);
 const wilayah5 = ref(0);
 const wilayah6 = ref(0);
 const wilayah7 = ref(0);
-const elsi_amount = ref(0);
-const pisi_amount = ref(0);
-const esti_amount = ref(0);
+const buyElsiAmount = ref(0);
+const buyPisiAmount = ref(0);
+const buyEstiAmount = ref(0);
+
+const elsi_options = [
+  { label: '0', value: 0 },
+  { label: '1', value: 1 },
+  { label: '2', value: 2 }
+];
+
+const pisi_options = [
+  { label: '0', value: 0 },
+  { label: '1', value: 1 },
+  { label: '2', value: 2 },
+  { label: '3', value: 3 }
+];
+
+const esti_options = [
+  { label: '0', value: 0 },
+  { label: '1', value: 1 },
+  { label: '2', value: 2 },
+  { label: '3', value: 3 },
+  { label: '4', value: 4 }
+];
 
 // Authentication and Firestore listener
 onMounted(() => {
@@ -466,16 +510,16 @@ const SubmitShop = async () => {
   try {
     const docRef = await addDoc(collection(db, "response-shop"), {
       user: uid.value,
-      elsi_amount: elsi_amount.value,
-      pisi_amount: pisi_amount.value,
-      esti_amount: esti_amount.value,
+      buyElsiAmount: buyElsiAmount.value,
+      buyPisiAmount: buyPisiAmount.value,
+      buyEstiAmount: buyEstiAmount.value,
       timestamp: new Date(),
       ruang: ruang.value,
       team_name: teamName.value,
     });
 
     const balanceRef = await updateDoc(doc(db, "users", auth.currentUser.uid), {
-      balance : balance.value - (15*elsi_amount.value + 10*pisi_amount.value + 5*esti_amount.value),
+      balance : balance.value - (15*buyElsiAmount.value + 10*buyPisiAmount.value + 5*buyEstiAmount.value),
     });
 
     docId = docRef.id
@@ -500,9 +544,9 @@ const addShop = async (docId) => {
     });
 
     const balanceRef = await updateDoc(doc(db, "users", auth.currentUser.uid), {
-      elsi_bal: elsi_bal.value + elsi_amount.value,
-      esti_bal: esti_bal.value + esti_amount.value,
-      pisi_bal: pisi_bal.value + pisi_amount.value,
+      elsi_bal: elsi_bal.value + buyElsiAmount.value,
+      esti_bal: esti_bal.value + buyEstiAmount.value,
+      pisi_bal: pisi_bal.value + buyPisiAmount.value,
     });
   } catch (e) {
     console.error("Error adding action (addShop) :", e);
