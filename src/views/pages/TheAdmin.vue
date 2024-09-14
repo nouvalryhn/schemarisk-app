@@ -312,30 +312,6 @@ watch(selectedTeam, () => {
 })
 
 const queryTeams = async (selected) => {
-    // const q_teams = query(collection(db, "users"), where("ruang", "==", selected));
-
-    // const qSnap = await getDocs(q_teams);
-    // const data = await qSnap.docs.map(doc => doc.data());
-
-    // console.log("team query:", data);
-    // teamsInRoom.value = data;
-    // selectedTeam.value = null;
-
-    // try {
-    //   const q = query(collection(db, 'users'), where('ruang', '==', selected));
-    //   const querySnapshot = await getDocs(q);
-    //   documents.value = querySnapshot.docs.map(doc => ({
-    //     id: doc.id,
-    //     data: doc.data()
-    //   }));
-    //   teamsInRoom.value = documents.value;
-    //   selectedTeam.value = null;
-      
-    //   console.log("team in room:", teamsInRoom.value);
-    // } catch (error) {
-    //   console.error("Error getting documents: ", error);
-    // }
-
     const q = query(collection(db, 'users'), where('ruang', '==', selected));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         documents.value = querySnapshot.docs.map(doc => ({
