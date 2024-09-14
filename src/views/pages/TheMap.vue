@@ -289,14 +289,14 @@
                 <text :x="1560" :y="650" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
                     {{ mapState.B5.poin_wilayah }} + {{ mapState.B5.poin_troops }}</text>
                 
-                <text :x="1530" :y="350" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                <text :x="1850" :y="600" font-family="Arial" font-size="40" font-weight="bold" fill="white"
                     text-anchor="middle">B6</text>
-                <text :x="1530" :y="380" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                <text :x="1850" :y="630" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
                     {{ mapState.B6.poin_wilayah }} + {{ mapState.B6.poin_troops }}</text>
 
-                <text :x="1850" :y="600" font-family="Arial" font-size="40" font-weight="bold" fill="white"
+                <text :x="1530" :y="350" font-family="Arial" font-size="40" font-weight="bold" fill="white"
                     text-anchor="middle">B7</text>
-                <text :x="1850" :y="630" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
+                <text :x="1530" :y="380" font-family="Arial" font-size="30" fill="white" text-anchor="middle">
                     {{ mapState.B7.poin_wilayah }} + {{ mapState.B6.poin_troops }}</text>
 
                 <text :x="1400" :y="1170" font-family="Arial" font-size="40" font-weight="bold" fill="white"
