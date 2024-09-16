@@ -37,21 +37,25 @@
                             <div>
                                 <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Neleci" @click="setBalance"></Button>
+                                <span class="m-2" :class="{ 'text-green-500': setBalanceAmount > selectedTeam.data.balance, 'text-red-500': setBalanceAmount < selectedTeam.data.balance }" v-if="setBalanceAmount != selectedTeam.data.balance">Neleci: {{ selectedTeam.data.balance }} &rarr; {{ setBalanceAmount }}</span>
                             </div>
                             
                             <div>
                                 <InputNumber v-model="setElsiAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Elsi" @click="setElsi"></Button>
+                                <span class="m-2" :class="{ 'text-green-500': setElsiAmount > selectedTeam.data.elsi_bal, 'text-red-500': setElsiAmount < selectedTeam.data.elsi_bal }" v-if="setElsiAmount != selectedTeam.data.elsi_bal">Elsi: {{ selectedTeam.data.elsi_bal }} &rarr; {{ setElsiAmount }}</span>
                             </div>
                             
                             <div>
                                 <InputNumber v-model="setPisiAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Pisi" @click="setPisi"></Button>
+                                <span class="m-2" :class="{ 'text-green-500': setPisiAmount > selectedTeam.data.pisi_bal, 'text-red-500': setPisiAmount < selectedTeam.data.pisi_bal }" v-if="setPisiAmount != selectedTeam.data.pisi_bal">Pisi: {{ selectedTeam.data.pisi_bal }} &rarr; {{ setPisiAmount }}</span>
                             </div> 
 
                             <div>
                                 <InputNumber v-model="setEstiAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Esti" @click="setEsti"></Button>
+                                <span class="m-2" :class="{ 'text-green-500': setEstiAmount > selectedTeam.data.esti_bal, 'text-red-500': setEstiAmount < selectedTeam.data.esti_bal }" v-if="setEstiAmount != selectedTeam.data.esti_bal">Esti: {{ selectedTeam.data.esti_bal }} &rarr; {{ setEstiAmount }}</span>
                             </div>
                             
 
