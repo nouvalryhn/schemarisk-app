@@ -10,7 +10,7 @@
         <p>Ruang: {{ ruang }}</p>
         <div class="flex items-center">
           <span class="mr-2">Team Side: </span>
-          <button v-if="side != 'error, hub admin'" :class="['colorbtn', sideColorClass]">{{ side }}</button>
+          <button v-if="side != 'no side' " :class="['colorbtn', sideColorClass]">{{ side.code }}</button>
           <span v-else class="text-red-500">error, hub admin</span>
         </div>
         <Button v-if="isAdmin"label="Go to Admin Page" @click="router.push('/admin')"></Button>
@@ -20,9 +20,27 @@
   <div class="md:w-1/3">
       <div class="card">
         <div class="font-bold text-xl mb-4">Troops Inventory</div>
-        <div class="text-lg">Elsi : {{ elsi_bal }}</div>
-        <div class="text-lg">Pisi : {{ pisi_bal }}</div>
-        <div class="text-lg">Esti : {{ esti_bal }}</div>
+        <div class="text-lg">
+          <p>Elsi : {{ elsi_bal }}
+            <span v-if="totalTroopChanges.elsi !== 0" :class="{'text-green-500': elsi_bal - totalTroopChanges.elsi >= 0, 'text-red-500': elsi_bal - totalTroopChanges.elsi < 0}">
+              &rarr; {{ elsi_bal - totalTroopChanges.elsi }}
+            </span>
+          </p>
+        </div>
+        <div class="text-lg">
+          <p>Pisi : {{ pisi_bal }}
+            <span v-if="totalTroopChanges.pisi !== 0" :class="{'text-green-500': pisi_bal - totalTroopChanges.pisi >= 0, 'text-red-500': pisi_bal - totalTroopChanges.pisi < 0}">
+              &rarr; {{ pisi_bal - totalTroopChanges.pisi }}
+            </span>
+          </p>
+        </div>
+        <div class="text-lg">
+          <p>Esti : {{ esti_bal }}
+            <span v-if="totalTroopChanges.esti !== 0" :class="{'text-green-500': esti_bal - totalTroopChanges.esti >= 0, 'text-red-500': esti_bal - totalTroopChanges.esti < 0}">
+              &rarr; {{ esti_bal - totalTroopChanges.esti }}
+            </span>
+          </p>
+        </div>
       </div>
   </div>
   
@@ -133,7 +151,7 @@
         icon="pi pi-save"
         label="Simpan Jawaban"
         @click="SubmitPoints"
-        :disabled="totalPoints > 100"
+        :disabled="totalPoints > 100 || (hasBagiPoin == true)"
       ></Button>
     </div>
     <div v-if="showForm === 'belanja-troops'">
@@ -189,9 +207,74 @@
     </div>
 
     <div v-if="showForm === 'place-troops'">
-      <p>Letakkan troops yang kamu miliki ke wilayah-wilayahmu</p>
+      <p class="font-semibold text-lg mb-2">Letakkan troops yang kamu miliki ke wilayah-wilayahmu</p>
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex flex-col gap-4 max-w-md md:w-1/2">
+          <div class="grid grid-cols-12 gap-2">
+            <label class="flex items-center col-span-12 mb-2 md:col-span-3 md:mb-0">Side</label>
+            <div class="col-span-12 md:col-span-9">
+              <Select v-model="selectedSide" :options="['A', 'B', 'C', 'D', 'E', 'F']" placeholder="Select Side" class="w-full" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-2">
+            <label class="flex items-center col-span-12 mb-2 md:col-span-3 md:mb-0">Area Number</label>
+            <div class="col-span-12 md:col-span-9">
+              <Select v-model="selectedArea" :options="[1, 2, 3, 4, 5, 6, 7]" placeholder="Select Area" class="w-full" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-2">
+            <label class="flex items-center col-span-12 mb-2 md:col-span-3 md:mb-0">Elsi</label>
+            <div class="col-span-12 md:col-span-9">
+              <InputNumber v-model="placeElsiAmount" :min="0" :max="elsi_bal" placeholder="Enter Elsi amount" class="w-full" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-2">
+            <label class="flex items-center col-span-12 mb-2 md:col-span-3 md:mb-0">Pisi</label>
+            <div class="col-span-12 md:col-span-9">
+              <InputNumber v-model="placePisiAmount" :min="0" :max="pisi_bal" placeholder="Enter Pisi amount" class="w-full" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-2">
+            <label class="flex items-center col-span-12 mb-2 md:col-span-3 md:mb-0">Esti</label>
+            <div class="col-span-12 md:col-span-9">
+              <InputNumber v-model="placeEstiAmount" :min="0" :max="esti_bal" placeholder="Enter Esti amount" class="w-full" />
+            </div>
+          </div>
+
+          <Button label="Add to Changes" icon="pi pi-plus" @click="addToChanges" class="w-full md:w-auto" />
+        </div>
+
+        <div class="md:w-1/2">
+          <h3 class="font-semibold text-lg mb-2">Troops Placement Changes</h3>
+          <ul v-if="troopChanges.length > 0" class="list-disc pl-5">
+            <li v-for="(change, index) in troopChanges" :key="index" class="mb-2 flex items-center justify-between">
+              <div>
+                <span>Area {{ change.area }}: 
+                Elsi: {{ change.elsi }}, Pisi: {{ change.pisi }}, Esti: {{ change.esti }}</span>
+                <span v-if="change.valid" class="text-green-500 ml-2">
+                  ✓ Penempatan Valid
+                </span>
+                <span v-else class="text-red-500 ml-2">
+                  ✗ Penempatan Tidak Valid
+                </span>
+              </div>
+              <Button icon="pi pi-trash" 
+                      class="p-button-text p-button-danger p-button-sm ml-4" 
+                      label="Hapus" 
+                      @click="removeChange(index)" />
+            </li>
+          </ul>
+          <p v-else>No changes added yet.</p>
+          <Button label="Submit All Changes" icon="pi pi-check" @click="submitAllChanges" class="w-full md:w-auto mt-4" :disabled="troopChanges.length === 0" />
+        </div>
+      </div>
     </div>
   </div>
+  
   <div class="card">
     <div class="font-bold text-xl mb-4">Recent Actions</div>
     <div>
@@ -231,6 +314,10 @@ import {
   arrayUnion,
   updateDoc,
   setDoc,
+  query,
+  where,
+  FieldValue,
+  increment
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, onMounted, computed } from "vue";
@@ -264,6 +351,7 @@ const isAdmin = ref(false);
 const elsi_bal = ref();
 const pisi_bal = ref();
 const esti_bal = ref();
+const hasBagiPoin = ref(false);
 
 const recentActions = ref([]);
 const showForm = ref(null);
@@ -309,6 +397,147 @@ const wilayah7 = ref(0);
 const buyElsiAmount = ref(0);
 const buyPisiAmount = ref(0);
 const buyEstiAmount = ref(0);
+const placeElsiAmount = ref(0);
+const placePisiAmount = ref(0);
+const placeEstiAmount = ref(0);
+const troopChanges = ref([]);
+const selectedSide = ref('');
+const selectedArea = ref('');
+const mapState = ref(null);
+
+const addToChanges = () => {
+  if (!selectedSide.value || !selectedArea.value) {
+    console.error('Please select both Side and Area');
+    return;
+  }
+
+  const areaKey = `${selectedSide.value}${selectedArea.value}`;
+  const isValidPlacement = mapState.value[areaKey]?.color === side.value.color;
+
+  const newChange = {
+    area: areaKey,
+    elsi: placeElsiAmount.value,
+    pisi: placePisiAmount.value,
+    esti: placeEstiAmount.value,
+    valid: isValidPlacement
+  };
+
+  troopChanges.value.push(newChange);
+
+  // Reset the input fields
+  selectedSide.value = '';
+  selectedArea.value = '';
+  placeElsiAmount.value = 0;
+  placePisiAmount.value = 0;
+  placeEstiAmount.value = 0;
+};
+
+const removeChange = (index) => {
+  troopChanges.value.splice(index, 1);
+};
+
+const submitAllChanges = async () => {
+  try {
+    // First, submit changes to Firestore (your existing logic)
+    await submitChangesToFirestore();
+
+    // Then, update the map state for valid changes
+    const updates = {};
+    
+    troopChanges.value.forEach(change => {
+      if (change.valid) {
+        const totalPoints = (change.elsi * 15) + (change.pisi * 10) + (change.esti * 5);
+        updates[`${change.area}.poin_troops`] = increment(totalPoints);
+      }
+    });
+
+    // Update the map state in Firestore
+    if (Object.keys(updates).length > 0) {
+      await updateDoc(doc(db, "map-state", getMapDocId(ruang.value)), updates);
+      console.log(updates);
+    }
+
+    // Clear the changes after successful submission
+    troopChanges.value = [];
+
+    // Show success message
+    showSuccess("Poin Troops Berhasil Ditambahkan");
+  } catch (error) {
+    console.error("Error submitting changes:", error);
+    showError("Failed to submit changes");
+  }
+};
+
+const submitChangesToFirestore = async () => {
+  try{
+    const docRef = await addDoc(collection(db, "response-troops"), {
+    user: uid.value,
+    changes: troopChanges.value,
+    timestamp: new Date(),
+    ruang: ruang.value,
+    team_name: teamName.value,
+    });
+    showSuccess(docRef.id);
+    await addTroops(docRef.id);
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    showError();
+  }
+}
+
+const addTroops = async (docId) => {
+  try {
+    let actionsRef = doc(db, "users", uid.value);
+    await updateDoc(actionsRef, {
+      actions: arrayUnion({
+        type: "place-troops",
+        timestamp: new Date(),
+        id : docId,
+      }),
+    });
+  } catch (e) {
+    console.error("Error adding action (addTroops) :", e);
+  }
+    // update users troop balance
+    await updateDoc(doc(db, "users", uid.value), {
+      elsi_bal: elsi_bal.value - totalTroopChanges.value.elsi,
+      esti_bal: esti_bal.value - totalTroopChanges.value.esti,
+      pisi_bal: pisi_bal.value - totalTroopChanges.value.pisi,
+    });
+
+    // update mapState poin_troops
+    await updateDoc(doc(db, "map-state", getMapDocId(ruang.value)), {
+      
+    });
+}
+
+const getMapDocId = (ruangNo) =>{
+    switch(ruangNo){
+        case '1':
+            return 'd21LqtDO5WcWdGCKJ3N3'
+        case '2':
+            return 'cuSTlp21z6P3JSyteRY9'
+        case '3':
+            return 'bg1uK7FvJYo3JX0PKYHn'
+        case '4':
+            return 'NMloa47dz6vfFP5WYOxf'
+        case '5':
+            return 'dJ1iBo0aWQPiY5XmPmhT'
+        case '6':
+            return '3Ac0IRP9ytg9ivcgg0gW'
+        case 'test':
+            return 'MWSB5KUGrLilOvAOMAuJ'
+    }
+}
+
+const totalTroopChanges = computed(() => {
+  return troopChanges.value.reduce((total, change) => {
+    total.elsi += change.elsi;
+    total.pisi += change.pisi;
+    total.esti += change.esti;
+    return total;
+  }, { elsi: 0, pisi: 0, esti: 0 });
+});
 
 const elsi_options = [
   { label: '0', value: 0 },
@@ -341,8 +570,9 @@ const totalPoints = computed(() => {
          wilayah7.value;
 });
 
+
 // Authentication and Firestore listener
-onMounted(() => {
+onMounted( () => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       uid.value = user.uid;
@@ -353,6 +583,18 @@ onMounted(() => {
     }
   });
 });
+let unsubscribeMap;
+
+const setupMapListener = (ruangNo) => {
+  console.log("setupMapListener: ", ruangNo);
+    const q_map = query(collection(db, "map-state"), where("ruang", "==", ruangNo));
+
+    unsubscribeMap = onSnapshot(q_map, (snapshot) => {
+        const data = snapshot.docs.map(doc => doc.data());
+        mapState.value = data[0];
+        console.log("mapState: ", mapState.value);
+    });
+};
 
 const setupFirestoreListener = (userId) => {
   const userDocRef = doc(db, "users", userId);
@@ -364,12 +606,14 @@ const setupFirestoreListener = (userId) => {
         teamName.value = data.team_name || "";
         balance.value = data.balance || 0;
         ruang.value = data.ruang || "";
-        side.value = data.side || "error, hub admin";
+        side.value = data.side || "no side";
         isAdmin.value = data.isAdmin || false;
         elsi_bal.value = data.elsi_bal;
         esti_bal.value = data.esti_bal;
         pisi_bal.value = data.pisi_bal;
+        hasBagiPoin.value = data.hasBagiPoin || false;
       }
+      setupMapListener(ruang.value);
     },
     (error) => {
       console.error("Error fetching document: ", error);
@@ -379,7 +623,7 @@ const setupFirestoreListener = (userId) => {
 
 const sideColorClass = computed(() => {
   const validSides = ['A', 'B', 'C', 'D', 'E', 'F'];
-  return validSides.includes(side.value) ? side.value : 'default';
+  return validSides.includes(side.value.code) ? side.value.code : 'default';
 });
 
 const setupActivityListener = (userId) => {
@@ -410,6 +654,12 @@ const formatActions = (type) => {
       break;
     case 'belanja-troops' :
       return 'Belanja Troops'
+      break;
+    case 'place-troops' :
+      return 'Placed Troops';
+      break;
+    case 'serang-wilayah' :
+      return 'Hajar Wilayah';
       break;
   }
 }
@@ -507,16 +757,30 @@ const SubmitPoints = async () => {
 
 const addBagi = async (docId) => {
   try {
+    // Update user's actions
     let actionsRef = doc(db, "users", uid.value);
     await updateDoc(actionsRef, {
       actions: arrayUnion({
         type: "bagi-wilayah",
         timestamp: new Date(),
-        id : docId,
+        id: docId,
       }),
+      hasBagiPoin: true // Set hasBagiPoin to true
     });
+
+    // Update map-state
+    const mapDocRef = doc(db, "map-state", getMapDocId(ruang.value));
+    const updates = {};
+    
+    for (let i = 1; i <= 7; i++) {
+      updates[`${side.value.code}${i}.poin_wilayah`] = eval(`wilayah${i}.value`);
+    }
+
+    await updateDoc(mapDocRef, updates);
+
+    console.log("Successfully updated map-state and user document");
   } catch (e) {
-    console.error("Error adding action (addBagi) :", e);
+    console.error("Error in addBagi:", e);
   }
 };
 
