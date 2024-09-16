@@ -207,7 +207,7 @@ router.beforeEach((to, from, next) => {
                 }
                 
             } else {
-                next("/auth/access"); // Redirect to access denied
+                next("/login"); // Redirect to login page
             }
         } else {
             next();

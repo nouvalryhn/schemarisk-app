@@ -8,6 +8,11 @@
         <p>ID: {{ uid }}</p>
         <p>Neleci: {{ balance }}</p>
         <p>Ruang: {{ ruang }}</p>
+        <div class="flex items-center">
+          <span class="mr-2">Team Side: </span>
+          <button v-if="side != 'error, hub admin'" :class="['colorbtn', sideColorClass]">{{ side }}</button>
+          <span v-else class="text-red-500">error, hub admin</span>
+        </div>
         <Button v-if="isAdmin"label="Go to Admin Page" @click="router.push('/admin')"></Button>
       </div>
   </div>
@@ -118,24 +123,17 @@
         
       </div>
 
-      <div class="font-semibold">
-          Total points spent :
-          {{
-            wilayah1 +
-            wilayah2 +
-            wilayah3 +
-            wilayah4 +
-            wilayah5 +
-            wilayah6 +
-            wilayah7
-          }}
-          out of 100
-        </div>
+      <div :class="{'text-green-500': totalPoints <= 100, 'text-red-500': totalPoints > 100}" class="font-semibold">
+        Total points spent:
+        {{ totalPoints }}
+        out of 100
+      </div>
       <br />
       <Button
         icon="pi pi-save"
         label="Simpan Jawaban"
         @click="SubmitPoints"
+        :disabled="totalPoints > 100"
       ></Button>
     </div>
     <div v-if="showForm === 'belanja-troops'">
@@ -235,7 +233,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 
@@ -261,6 +259,7 @@ const uid = ref();
 const teamName = ref("");
 const balance = ref(0);
 const ruang = ref("");
+const side = ref("");
 const isAdmin = ref(false);
 const elsi_bal = ref();
 const pisi_bal = ref();
@@ -332,6 +331,16 @@ const esti_options = [
   { label: '4', value: 4 }
 ];
 
+const totalPoints = computed(() => {
+  return wilayah1.value +
+         wilayah2.value +
+         wilayah3.value +
+         wilayah4.value +
+         wilayah5.value +
+         wilayah6.value +
+         wilayah7.value;
+});
+
 // Authentication and Firestore listener
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
@@ -355,6 +364,7 @@ const setupFirestoreListener = (userId) => {
         teamName.value = data.team_name || "";
         balance.value = data.balance || 0;
         ruang.value = data.ruang || "";
+        side.value = data.side || "error, hub admin";
         isAdmin.value = data.isAdmin || false;
         elsi_bal.value = data.elsi_bal;
         esti_bal.value = data.esti_bal;
@@ -366,6 +376,11 @@ const setupFirestoreListener = (userId) => {
     }
   );
 };
+
+const sideColorClass = computed(() => {
+  const validSides = ['A', 'B', 'C', 'D', 'E', 'F'];
+  return validSides.includes(side.value) ? side.value : 'default';
+});
 
 const setupActivityListener = (userId) => {
   const activityRef = doc(db, "users", userId);
@@ -510,9 +525,9 @@ const SubmitShop = async () => {
   try {
     const docRef = await addDoc(collection(db, "response-shop"), {
       user: uid.value,
-      buyElsiAmount: buyElsiAmount.value,
-      buyPisiAmount: buyPisiAmount.value,
-      buyEstiAmount: buyEstiAmount.value,
+      elsi_amount: buyElsiAmount.value,
+      pisi_amount: buyPisiAmount.value,
+      esti_amount: buyEstiAmount.value,
       timestamp: new Date(),
       ruang: ruang.value,
       team_name: teamName.value,
@@ -583,3 +598,44 @@ const setActiveButton = (id) => {
   showForm.value = id;
 };
 </script>
+
+<style scoped>
+.colorbtn {
+    border: 2px solid black;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    font-size: 16px;
+    border-radius: 25%;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.A {
+    background-color: #EF476F;
+}
+
+.B {
+    background-color: #f78c6b;
+}
+
+.C {
+    background-color: #ffd166;
+}
+
+.D {
+    background-color: #06d6a0;
+}
+
+.E {
+    background-color: #118ab2;
+}
+
+.F {
+    background-color: #073b4c;
+}
+</style>

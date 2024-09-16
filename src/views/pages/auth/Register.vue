@@ -15,11 +15,8 @@
                         <label for="teamname" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Nama Tim</label>
                         <InputText id="teamname" type="text" placeholder="Nama Tim" class="w-full md:w-[30rem] mb-8" v-model="teamName" />
 
-                        <label for="bal" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Starting Balance</label>
-                        <InputText id="bal" type="numeric" placeholder="0" class="w-full md:w-[30rem] mb-8" v-model="startingbalance" />
-
                         <label for="room" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Ruangan</label>
-                        <Select id="room" :options="rooms" class="w-full md:w-[30rem] mb-8" placeholder="Pilih Ruangan" v-model="selectedRoom"/>
+                        <Select id="room" :options="rooms" scrollHeight="230px" class="w-full md:w-[30rem] mb-8" placeholder="Pilih Ruangan" v-model="selectedRoom"/>
 
                         <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
                         <InputText id="email1" type="text" placeholder="Email address" class="w-full md:w-[30rem] mb-8" v-model="email" />
@@ -71,6 +68,7 @@ const rooms = ref([
     '4',
     '5',
     '6',
+    'test',
 ]);
 
 const register = async () => {
@@ -81,7 +79,7 @@ const register = async () => {
                 try {
                     setDoc(doc(db, "users", auth.currentUser.uid), {
                         ruang: selectedRoom.value   ,
-                        balance: startingbalance.value,
+                        balance: 0,
                         team_name: teamName.value,
                         isAdmin: false,
                         elsi_bal: 0,

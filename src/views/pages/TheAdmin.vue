@@ -10,7 +10,7 @@
                 <br>
                 <div>
                     <label for="room" class="block text-lg">Select Room to Show</label>
-                    <Select id="room" :options="rooms" optionLabel="name" class="w-full md:w-[15rem]" showClear
+                    <Select id="room" :options="rooms" scrollHeight="230px" optionLabel="name" class="w-full md:w-[15rem]" showClear
                         placeholder="Pilih Ruangan" v-model="selectedRoom" />
                 </div>
             </div>
@@ -225,7 +225,9 @@ const rooms = ref([
     { name: 'Ruang 2', code: '2' },
     { name: 'Ruang 3', code: '3' },
     { name: 'Ruang 4', code: '4' },
-    { name: 'Ruang 5', code: '5' }
+    { name: 'Ruang 5', code: '5' },
+    { name: 'Ruang 6', code: '6' },
+    { name: 'Ruang Test', code: 'test' },
 ]);
 
 const teamsInRoom = ref();
