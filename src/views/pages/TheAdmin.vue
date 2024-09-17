@@ -157,7 +157,8 @@
                 <Column header="Team" style="min-width: 100px" class="font-bold">
                     <template #body="slotProps">
                         <span class="">{{ slotProps.data.data.team_name }}
-                            <button class="colorbtn" :style="`background-color: ${slotProps.data.data.side.color}`">{{ slotProps.data.data.side.code }}</button>
+                            <button v-if="slotProps.data.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.data.side.color}`">{{ slotProps.data.data.side.code }}</button>
+                            <span v-else class="text-red-500">no side assigned</span>
                         </span>
                         <p class="font-normal italic">{{ slotProps.data.id }}</p>
 
