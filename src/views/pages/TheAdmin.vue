@@ -13,9 +13,18 @@
                     <Select id="room" :options="rooms" scrollHeight="230px" optionLabel="name" class="w-full md:w-[15rem]" showClear
                         placeholder="Pilih Ruangan" v-model="selectedRoom" />
                 </div>
+            <div class="mt-4">
+                <Button 
+                    :label="selectedRoomMapFrozen ? 'Unfreeze Map' : 'Freeze Map'" 
+                    :icon="selectedRoomMapFrozen ? 'pi pi-lock-open' : 'pi pi-lock'" 
+                    @click="toggleMapFreeze" 
+                    v-if="selectedRoom"
+                    class="p-button"
+                    :severity="selectedRoomMapFrozen ? 'info' : 'danger'"
+                />
+            </div>
             </div>
         </div>
-
 
         <div class="md:w-1/2">
             <div class="card">
@@ -433,6 +442,42 @@ const formatDateToLocal = (timestamp) => {
     } catch (error) {
         console.error('Date formatting error:', error);
         return 'Invalid Date';
+    }
+};
+
+const getMapDocId = (ruangNo) =>{
+    switch(ruangNo){
+        case '1':
+            return 'd21LqtDO5WcWdGCKJ3N3'
+        case '2':
+            return 'cuSTlp21z6P3JSyteRY9'
+        case '3':
+            return 'bg1uK7FvJYo3JX0PKYHn'
+        case '4':
+            return 'NMloa47dz6vfFP5WYOxf'
+        case '5':
+            return 'dJ1iBo0aWQPiY5XmPmhT'
+        case '6':
+            return '3Ac0IRP9ytg9ivcgg0gW'
+        case 'test':
+            return 'MWSB5KUGrLilOvAOMAuJ'
+    }
+}
+
+const selectedRoomMapFrozen = ref(false);
+
+const toggleMapFreeze = () => {
+    selectedRoomMapFrozen.value = !selectedRoomMapFrozen.value;
+    if (selectedRoom.value) {
+        try{
+            updateDoc(doc(db, "map-state", getMapDocId(selectedRoom.value.code)), {
+                mapFrozen: selectedRoomMapFrozen.value
+            });
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Status Map berhasil diubah', life: 3000 });
+        } catch (e) {
+        console.error("Error setting map freeze :", e);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error setting map freeze, contact admin', life: 3000 });
+    }
     }
 };
 
