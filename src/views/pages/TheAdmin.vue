@@ -13,14 +13,75 @@
                     <Select id="room" :options="rooms" scrollHeight="230px" optionLabel="name" class="w-full md:w-[15rem]" showClear
                         placeholder="Pilih Ruangan" v-model="selectedRoom" />
                 </div>
-            <div class="mt-4">
+            <div class="mt-2">
                 <Button 
                     :label="selectedRoomMapFrozen ? 'Unfreeze Map' : 'Freeze Map'" 
                     :icon="selectedRoomMapFrozen ? 'pi pi-lock-open' : 'pi pi-lock'" 
                     @click="toggleMapFreeze" 
                     v-if="selectedRoom"
-                    class="p-button"
+                    class="p-button mr-2"
                     :severity="selectedRoomMapFrozen ? 'info' : 'danger'"
+                />
+                <Button 
+                    label="Izinkan Bagi Poin Wilayah" 
+                    icon="pi pi-map-marker" 
+                    @click="allowBagiPoin" 
+                    v-if="selectedRoom"
+                    class="p-button mr-2"
+                    severity="info"
+                />
+            </div>
+            <div class="mt-2 mb-2">
+                <Button 
+                    label="Izinkan Jawab Soal" 
+                    icon="pi pi-pencil" 
+                    @click="allowJawabSoal" 
+                    v-if="selectedRoom"
+                    class="p-button mr-2"
+                    severity="success"
+                /><Button 
+                    label="Blokir Jawab Soal" 
+                    icon="pi pi-pencil" 
+                    @click="blockJawabSoal" 
+                    v-if="selectedRoom"
+                    class="p-button mr-2"
+                    severity="danger"
+                />
+            </div>
+            <div class="mt-2 mb-2">
+                <Button 
+                    label="Izinkan Belanja Troops" 
+                    icon="pi pi-shopping-cart" 
+                    @click="allowBelanjaTroops" 
+                    v-if="selectedRoom"
+                    class="p-button mr-2"
+                    severity="success"
+                />
+                <Button 
+                    label="Blokir Belanja Troops" 
+                    icon="pi pi-shopping-cart" 
+                    @click="blockBelanjaTroops" 
+                    v-if="selectedRoom"
+                    class="p-button mr-2"
+                    severity="danger"
+                />
+            </div>
+            <div class="mt-2 mb-2">
+                <Button 
+                    label="Izinkan Place Troops" 
+                    icon="pi pi-users" 
+                    @click="allowPlaceTroops" 
+                    v-if="selectedRoom"
+                    class="p-button mr-2"
+                    severity="success"
+                />
+                <Button 
+                    label="Blokir Place Troops" 
+                    icon="pi pi-users" 
+                    @click="blockPlaceTroops" 
+                    v-if="selectedRoom"
+                    class="p-button mr-2"
+                    severity="danger"
                 />
             </div>
             </div>
@@ -81,9 +142,11 @@
     <div class="card mt-6">
         <div class="font-bold text-xl mb-4">
             Team Stats
-            <p class="font-normal text-lg">Showing stats for room : </p>
-            <p v-if="selectedRoom"> {{ selectedRoom.name }} </p>
-            <p v-else >-</p>
+            <p class="font-normal text-lg">Showing stats for room : 
+                <span v-if="selectedRoom"> {{ selectedRoom.name }}</span>
+                <span v-else>-</span>
+            </p>
+            
         </div>
 
         <div v-if="selectedRoom">
@@ -93,7 +156,9 @@
                 </template>
                 <Column header="Team" style="min-width: 100px" class="font-bold">
                     <template #body="slotProps">
-                        <p>{{ slotProps.data.data.team_name }}</p>
+                        <span class="">{{ slotProps.data.data.team_name }}
+                            <button class="colorbtn" :style="`background-color: ${slotProps.data.data.side.color}`">{{ slotProps.data.data.side.code }}</button>
+                        </span>
                         <p class="font-normal italic">{{ slotProps.data.id }}</p>
 
                     </template>
@@ -102,19 +167,29 @@
                 <Column header="Balance" style="min-width: 100px">
                     <template #body="slotProps">
                         <p>Neleci : {{ slotProps.data.data.balance }}</p>
-                        <!-- <p>Elsi : {{ slotProps.data.elsi_bal }}</p>
-                        <p>Pisi: {{ slotProps.data.pisi_bal }}</p>
-                        <p>Esti: {{ slotProps.data.esti_bal }}</p> -->
                     </template>
                 </Column>
 
-                <Column header="Troops" style="min-width: 200px;">
+                <Column header="Troops" style="">
                     <template #body="slotProps">
                         <p>Elsi : {{ slotProps.data.data.elsi_bal }}</p>
                         <p>Pisi: {{ slotProps.data.data.pisi_bal }}</p>
                         <p>Esti: {{ slotProps.data.data.esti_bal }}</p>
                     </template>
                 </Column>
+                <Column header="Bagi Poin" style="">
+                    <template #body="slotProps">
+                        <p>{{ slotProps.data.data.hasBagiPoin }}</p>
+                    </template>
+                </Column>
+                <Column header="Ronde Ini" style="">
+                    <template #body="slotProps">
+                        <p>Soal: {{ slotProps.data.data.hasJawabSoal }}</p>
+                        <p>Belanja: {{ slotProps.data.data.hasBelanjaTroops }}</p>
+                        <p>Place: {{ slotProps.data.data.hasPlaceTroops }}</p>
+                    </template>
+                </Column>
+                
             </DataTable>
         </div>
     </div>
@@ -204,6 +279,32 @@
             <div v-else>Pilih Ruangan dulu woi >:(</div>
         </div>
 
+        <div class="card">
+            <div class="font-semibold text-xl mb-4">Submisi Belanja Troops</div>
+            <div v-if="selectedRoom">
+                <DataTable :value="troopsResponses" scrollable scrollHeight="800px" class="mt-6">
+                    <template #empty>
+                        Tidak ada riwayat.
+                    </template>
+                    <Column field="ruang" header="Ruang" style="min-width: 20px"> </Column>
+                    <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
+                    </Column>
+                    <Column field="timestamp" header="Waktu" style="min-width: 100px">
+                        <template #body="slotProps">
+                            <span>{{ formatDateToLocal(slotProps.data.timestamp) }}</span>
+                        </template>
+                    </Column>
+                    <Column field="jawaban" header="Jawaban" style="min-width: 100px">
+                        <template #body="slotProps">
+                            <p v-for="item in slotProps.data.changes" :key="item.id">
+                                {{ item.area }} : {{ item.elsi }} {{ item.pisi }} {{ item.esti }} valid:{{ item.valid }}
+                            </p>
+                        </template>
+                    </Column>
+                </DataTable>
+            </div>
+            <div v-else>Pilih Ruangan dulu woi >:(</div>
+        </div>
     </div>
 
 </template>
@@ -223,6 +324,7 @@ import {
     query,
     orderBy,
     getDocs,
+    writeBatch
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ref, onMounted, watch } from "vue";
@@ -297,6 +399,7 @@ const setupFirestoreListener = (userId) => {
 const soalResponses = ref();
 const pointsResponses = ref();
 const shopResponses = ref();
+const troopsResponses = ref();
 
 watch(selectedRoom, async (selected) => {
     if (selected !== null && selected !== '') {
@@ -350,6 +453,7 @@ const setBalance = async () => {
             await updateDoc(balanceRef, {
                 balance : (setBalanceAmount.value),
             });
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Neleci berhasil diubah', life: 3000 });
       } catch (e) {
         console.error("Error setting neleci :", e);
 }}
@@ -361,6 +465,7 @@ const setElsi = async () => {
             await updateDoc(balanceRef, {
                 elsi_bal : (setElsiAmount.value),
             });
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Elsi berhasil diubah', life: 3000 });
       } catch (e) {
         console.error("Error setting Elsi :", e);
 }}
@@ -372,6 +477,7 @@ const setPisi = async () => {
             await updateDoc(balanceRef, {
                 pisi_bal : (setPisiAmount.value),
             });
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Pisi berhasil diubah', life: 3000 });
       } catch (e) {
         console.error("Error setting Pisi :", e);
 }}
@@ -383,20 +489,174 @@ const setEsti = async () => {
             await updateDoc(balanceRef, {
                 esti_bal : (setEstiAmount.value),
             });
+            toast.add({ severity: 'success', summary: 'Success', detail: 'Esti berhasil diubah', life: 3000 });
       } catch (e) {
         console.error("Error setting Esti :", e);
 }}
+
+const allowBagiPoin = async () => {
+    try {
+        console.log("Allowing Bagi Poin for room:", selectedRoom.value.code);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
+        const querySnapshot = await getDocs(q);
+        
+        const batch = writeBatch(db);
+        
+        querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { hasBagiPoin: false });
+        });
+        
+        await batch.commit();
+        
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Bagi Poin diizinkan untuk semua tim', life: 3000 });
+    } catch (e) {
+        console.error("Error setting allowBagiPoin :", e);
+    }
+}
+
+const allowJawabSoal = async () => {
+    try {
+        console.log("Allowing Jawab Soal for room:", selectedRoom.value.code);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
+        const querySnapshot = await getDocs(q);
+        
+        const batch = writeBatch(db);
+        
+        querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { hasJawabSoal: false });
+        });
+        
+        await batch.commit();
+        
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Jawab Soal diizinkan untuk semua tim', life: 3000 });
+    } catch (e) {
+        console.error("Error setting allowJawabSoal :", e);
+    }
+}
+
+const blockJawabSoal = async () => {
+    try {
+        console.log("Blocking Jawab Soal for room:", selectedRoom.value.code);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
+        const querySnapshot = await getDocs(q);
+
+        const batch = writeBatch(db);
+        
+        querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { hasJawabSoal: true });
+        });
+        
+        await batch.commit();
+        
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Jawab Soal diblokir untuk semua tim', life: 3000 });
+    } catch (e) {
+        console.error("Error setting blockJawabSoal :", e);
+    }
+}
+
+const allowBelanjaTroops = async () => {
+    try {
+        console.log("Allowing Belanja Troops for room:", selectedRoom.value.code);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
+        const querySnapshot = await getDocs(q);
+
+        const batch = writeBatch(db);
+        
+        querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { hasBelanjaTroops: false });
+        });
+        
+        await batch.commit();
+        
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Belanja Troops diizinkan untuk semua tim', life: 3000 });
+    }
+    catch (e) {
+        console.error("Error setting allowBelanjaTroops :", e);
+    }
+}
+
+const blockBelanjaTroops = async () => {
+    try {
+        console.log("Blocking Belanja Troops for room:", selectedRoom.value.code);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
+        const querySnapshot = await getDocs(q);
+
+        const batch = writeBatch(db);
+        
+        querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { hasBelanjaTroops: true });
+        });
+        
+        await batch.commit();
+
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Belanja Troops diblokir untuk semua tim', life: 3000 });
+    }
+    catch (e) {
+        console.error("Error setting blockBelanjaTroops :", e);
+    }
+}
+
+const allowPlaceTroops = async () => {
+    try {
+        console.log("Allowing Place Troops for room:", selectedRoom.value.code);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
+        const querySnapshot = await getDocs(q);
+
+        const batch = writeBatch(db);
+        
+        querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { hasPlaceTroops: false });
+        });
+        
+        await batch.commit();
+        
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Place Troops diizinkan untuk semua tim', life: 3000 });
+    }
+    catch (e) {
+        console.error("Error setting allowPlaceTroops :", e);
+    }
+}
+
+const blockPlaceTroops = async () => {
+    try {
+        console.log("Blocking Place Troops for room:", selectedRoom.value.code);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
+        const querySnapshot = await getDocs(q);
+
+        const batch = writeBatch(db);
+        
+        querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { hasPlaceTroops: true });
+        });
+        
+        await batch.commit();
+        
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Place Troops diblokir untuk semua tim', life: 3000 });
+    }
+    catch (e) {
+        console.error("Error setting blockPlaceTroops :", e);
+    }
+}
+
 
 
 let unsubscribeSoal;
 let unsubscribeShop;
 let unsubscribePoints;
-
+let unsubscribeTroops;
 const queryResponses = (selected) => {
     console.log("querying selected: ", selected);
     const q_soal = query(collection(db, "response-soal"), where("ruang", "==", selected), orderBy("timestamp", "desc"));
     const q_points = query(collection(db, "response-points"), where("ruang", "==", selected), orderBy("timestamp", "desc"));
     const q_shop = query(collection(db, "response-shop"), where("ruang", "==", selected), orderBy("timestamp", "desc"));
+    const q_troops = query(collection(db, "response-troops"), where("ruang", "==", selected), orderBy("timestamp", "desc"));
 
     unsubscribeSoal = onSnapshot(q_soal, (snapshot) => {
         const data = snapshot.docs.map(doc => doc.data());
@@ -414,6 +674,12 @@ const queryResponses = (selected) => {
         const data = snapshot.docs.map(doc => doc.data());
         console.log('response-shop data:', data);
         shopResponses.value = data;
+    });
+
+    unsubscribeTroops = onSnapshot(q_troops, (snapshot) => {
+        const data = snapshot.docs.map(doc => doc.data());
+        console.log('response-troops data:', data);
+        troopsResponses.value = data;
     });
 };
 
@@ -485,6 +751,26 @@ onMounted( () => {
     if (unsubscribeSoal) unsubscribeSoal();
     if (unsubscribePoints) unsubscribePoints();
     if (unsubscribeShop) unsubscribeShop();
+    if (unsubscribeTroops) unsubscribeTroops();
 }) 
 
 </script>
+
+<style scoped>
+.colorbtn {
+  border: 2px solid black;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  font-size: 16px;
+  border-radius: 25%;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+
+</style>
