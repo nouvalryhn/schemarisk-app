@@ -22,21 +22,21 @@
         <div class="font-bold text-xl mb-4">Troops Inventory</div>
         <div class="text-lg">
           <p>Elsi : {{ elsi_bal }}
-            <span v-if="totalTroopChanges.elsi !== 0" :class="{'text-green-500': elsi_bal - totalTroopChanges.elsi >= 0, 'text-red-500': elsi_bal - totalTroopChanges.elsi < 0}">
+            <span v-if="totalTroopChanges.elsi !== 0" :class="{'text-green-500': elsi_bal - totalTroopChanges.elsi == 0, 'text-red-500': elsi_bal - totalTroopChanges.elsi > 0}">
               &rarr; {{ elsi_bal - totalTroopChanges.elsi }}
             </span>
           </p>
         </div>
         <div class="text-lg">
           <p>Pisi : {{ pisi_bal }}
-            <span v-if="totalTroopChanges.pisi !== 0" :class="{'text-green-500': pisi_bal - totalTroopChanges.pisi >= 0, 'text-red-500': pisi_bal - totalTroopChanges.pisi < 0}">
+            <span v-if="totalTroopChanges.pisi !== 0" :class="{'text-green-500': pisi_bal - totalTroopChanges.pisi == 0, 'text-red-500': pisi_bal - totalTroopChanges.pisi > 0}">
               &rarr; {{ pisi_bal - totalTroopChanges.pisi }}
             </span>
           </p>
         </div>
         <div class="text-lg">
           <p>Esti : {{ esti_bal }}
-            <span v-if="totalTroopChanges.esti !== 0" :class="{'text-green-500': esti_bal - totalTroopChanges.esti >= 0, 'text-red-500': esti_bal - totalTroopChanges.esti < 0}">
+            <span v-if="totalTroopChanges.esti !== 0" :class="{'text-green-500': esti_bal - totalTroopChanges.esti == 0, 'text-red-500': esti_bal - totalTroopChanges.esti > 0}">
               &rarr; {{ esti_bal - totalTroopChanges.esti }}
             </span>
           </p>
@@ -227,21 +227,21 @@
           <div class="grid grid-cols-12 gap-2">
             <label class="flex items-center col-span-12 mb-2 md:col-span-3 md:mb-0">Elsi</label>
             <div class="col-span-12 md:col-span-9">
-              <InputNumber v-model="placeElsiAmount" :min="0" :max="elsi_bal" placeholder="Enter Elsi amount" class="w-full" />
+              <InputNumber v-model="placeElsiAmount" :min="0" :max="elsi_bal - totalTroopChanges.elsi" placeholder="Enter Elsi amount" class="w-full" />
             </div>
           </div>
 
           <div class="grid grid-cols-12 gap-2">
             <label class="flex items-center col-span-12 mb-2 md:col-span-3 md:mb-0">Pisi</label>
             <div class="col-span-12 md:col-span-9">
-              <InputNumber v-model="placePisiAmount" :min="0" :max="pisi_bal" placeholder="Enter Pisi amount" class="w-full" />
+              <InputNumber v-model="placePisiAmount" :min="0" :max="pisi_bal - totalTroopChanges.pisi" placeholder="Enter Pisi amount" class="w-full" />
             </div>
           </div>
 
           <div class="grid grid-cols-12 gap-2">
             <label class="flex items-center col-span-12 mb-2 md:col-span-3 md:mb-0">Esti</label>
             <div class="col-span-12 md:col-span-9">
-              <InputNumber v-model="placeEstiAmount" :min="0" :max="esti_bal" placeholder="Enter Esti amount" class="w-full" />
+              <InputNumber v-model="placeEstiAmount" :min="0" :max="esti_bal - totalTroopChanges.esti" placeholder="Enter Esti amount" class="w-full" />
             </div>
           </div>
 
@@ -612,6 +612,10 @@ const setupFirestoreListener = (userId) => {
         esti_bal.value = data.esti_bal;
         pisi_bal.value = data.pisi_bal;
         hasBagiPoin.value = data.hasBagiPoin || false;
+      }
+      if (isAdmin.value){
+        router.push('/admin');
+        return;
       }
       setupMapListener(ruang.value);
     },

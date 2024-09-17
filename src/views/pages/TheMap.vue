@@ -78,7 +78,10 @@
             <!-- <div id="map" class=" flex justify-center"> -->
             <div class="map-container flex justify-center"
                 style="width: 100%; height: 80vh; overflow: hidden; border-radius: 1rem; border: 2px solid grey; background-color: white;">
-                <svg ref="svgMap" id="mapSvg" class="w-full h-full" viewBox="0 0 2100 2100" fill="none"
+                <div v-if="mapState.mapFrozen && !isAdmin" class="top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                    <div class="text-white text-2xl font-bold">Map Frozen</div>
+                </div>
+                <svg v-else ref="svgMap" id="mapSvg" class="w-full h-full" viewBox="0 0 2100 2100" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M410.176 1869.46C161.763 1679.22 1.56291 1379.58 1.56291 1042.52C1.56291 1041.84 1.56356 1041.16 1.56486 1040.48C102.395 1030.74 145.655 1030.93 212.251 1031.22C224.434 1031.28 237.397 1031.33 251.636 1031.33C312.842 1031.33 386.114 1035.27 461.584 1039.31C468.842 1039.7 476.121 1040.09 483.411 1040.48C603.258 1033.24 697.868 1043.95 810.53 1056.69C840.253 1060.05 871.233 1063.56 904.265 1066.91C904.265 1092.33 910.364 1162.47 948.993 1162.47C948.993 1162.47 904.265 1230.58 885.967 1318C865.02 1335.6 854.087 1355.61 842.922 1376.05C826.994 1405.2 810.594 1435.22 763.98 1460.32C684.689 1503.02 624.712 1539.61 577.95 1602.64C531.189 1665.67 500.692 1736.82 482.394 1789.69C468.18 1830.75 427.587 1858.93 410.176 1869.46Z"
@@ -573,6 +576,7 @@ const ruang = ref(null);
 const elsi_bal = ref(0);
 const esti_bal = ref(0);
 const pisi_bal = ref(0);
+const isFrozen = ref(true);
 
 const uid = ref("");
 
@@ -626,6 +630,7 @@ const getUserDetails = (userId) => {
                     elsi_bal.value = data.elsi_bal;
                     esti_bal.value = data.esti_bal;
                     pisi_bal.value = data.pisi_bal;
+                    isFrozen.value = data.isFrozen || false;
                     resolve(); // Resolve the promise when data is fetched
                 } else {
                     reject("User document does not exist");
@@ -1061,6 +1066,10 @@ function handleSVGClick(id) {
     background-color: #073b4c;
 }
 
+.map-container {
+    touch-action: none;
+}
+ 
 .freeze {
     background-color: rgb(220, 243, 255);
 }
