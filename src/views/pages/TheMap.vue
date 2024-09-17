@@ -654,6 +654,23 @@ const initializeSvgPanZoom = () => {
                 controlIconsEnabled: true,
                 fit: true,
                 center: true,
+                minZoom: 0.5,
+                maxZoom: 10,
+                zoomScaleSensitivity: 0.5,
+                eventsListenerElement: svgMap.value.parentNode,
+                beforePan: function(oldPan, newPan) {
+                    const gutterWidth = 100;
+                    const gutterHeight = 100;
+                    const sizes = this.getSizes();
+                    const leftLimit = -((sizes.viewBox.x + sizes.viewBox.width) * sizes.realZoom) + gutterWidth;
+                    const rightLimit = sizes.width - gutterWidth - (sizes.viewBox.x * sizes.realZoom);
+                    const topLimit = -((sizes.viewBox.y + sizes.viewBox.height) * sizes.realZoom) + gutterHeight;
+                    const bottomLimit = sizes.height - gutterHeight - (sizes.viewBox.y * sizes.realZoom);
+                    return {
+                        x: Math.max(leftLimit, Math.min(rightLimit, newPan.x)),
+                        y: Math.max(topLimit, Math.min(bottomLimit, newPan.y))
+                    };
+                }
             });
         } else {
             console.error("SVG element not found");
@@ -1068,6 +1085,10 @@ function handleSVGClick(id) {
 
 .map-container {
     touch-action: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
  
 .freeze {
