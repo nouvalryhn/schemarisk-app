@@ -324,6 +324,7 @@ import {
     where,
     query,
     orderBy,
+    getDoc,
     getDocs,
     writeBatch
 } from "firebase/firestore";
@@ -406,6 +407,7 @@ watch(selectedRoom, async (selected) => {
     if (selected !== null && selected !== '') {
         await queryResponses(selected.code);
         await queryTeams(selected.code);
+        await getMapFrozenStatus();
         selectedTeam.value = null;
     }
 });
@@ -732,6 +734,18 @@ const getMapDocId = (ruangNo) =>{
 }
 
 const selectedRoomMapFrozen = ref(false);
+
+const getMapFrozenStatus = async () => {
+    const docRef = doc(db, "map-state", getMapDocId(selectedRoom.value.code));
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        console.log("map frozen status:", docSnap.data().mapFrozen);
+        selectedRoomMapFrozen.value = docSnap.data().mapFrozen;
+    } else {
+        selectedRoomMapFrozen.value = false;
+    }
+}
 
 const toggleMapFreeze = () => {
     selectedRoomMapFrozen.value = !selectedRoomMapFrozen.value;
