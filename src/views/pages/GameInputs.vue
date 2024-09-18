@@ -846,9 +846,6 @@ const SubmitShop = async () => {
 
     docId = docRef.id
     showSuccess(docId);
-    buyElsiAmount.value = 0;
-    buyPisiAmount.value = 0;
-    buyEstiAmount.value = 0;
   } catch (e) {
     console.error("Error adding document: ", e);
     showError();
@@ -876,6 +873,10 @@ const addShop = async (docId) => {
     });
   } catch (e) {
     console.error("Error adding action (addShop) :", e);
+  }finally{
+    buyElsiAmount.value = 0;
+    buyPisiAmount.value = 0;
+    buyEstiAmount.value = 0;
   }
 };
 
