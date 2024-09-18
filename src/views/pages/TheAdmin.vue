@@ -150,7 +150,7 @@
         </div>
 
         <div v-if="selectedRoom">
-            <DataTable :value="teamsInRoom" scrollable scrollHeight="800px" class="mt-6">
+            <DataTable :value="sortedTeamsInRoom" scrollable scrollHeight="800px" class="mt-6">
                 <template #empty>
                     Tidak ada riwayat.
                 </template>
@@ -328,7 +328,7 @@ import {
     writeBatch
 } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useToast } from "primevue/usetoast";
 
 const toast = useToast();
@@ -747,6 +747,16 @@ const toggleMapFreeze = () => {
     }
     }
 };
+
+const sortedTeamsInRoom = computed(() => {
+  if (!teamsInRoom.value) return [];
+  
+  return [...teamsInRoom.value].sort((a, b) => {
+    const codeA = a.data.side?.code || 'ZZZ'; // 'ZZZ' ensures teams without a side are at the end
+    const codeB = b.data.side?.code || 'ZZZ';
+    return codeA.localeCompare(codeB);
+  });
+});
 
 onMounted( () => {
     if (unsubscribeSoal) unsubscribeSoal();
