@@ -737,6 +737,9 @@ const SubmitAns = async () => {
     });
     docId = docRef.id;
     showSuccess(docId);
+    answer_1.value = "";
+    answer_2.value = "";
+    answer_3.value = "";
   } catch (e) {
     console.error("Error adding document: ", e);
     showError();
@@ -843,6 +846,9 @@ const SubmitShop = async () => {
 
     docId = docRef.id
     showSuccess(docId);
+    buyElsiAmount.value = 0;
+    buyPisiAmount.value = 0;
+    buyEstiAmount.value = 0;
   } catch (e) {
     console.error("Error adding document: ", e);
     showError();
