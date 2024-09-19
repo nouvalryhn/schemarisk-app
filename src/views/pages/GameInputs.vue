@@ -95,31 +95,31 @@
         <div class="flex flex-wrap mt-4">
           <div class="w-full md:w-1/4 pr-4 pb-4">
             <div class="font-semibold">Poin Wilayah 1</div>
-            <InputNumber v-model="wilayah1" mode="decimal" class="w-full"></InputNumber>
+            <InputNumber :step="5" :min="0" :max="100" v-model="wilayah1" mode="decimal" class="w-full"></InputNumber>
           </div>
           <div class="w-full md:w-1/4 pr-4 pb-4">
             <div class="font-semibold">Poin Wilayah 2</div>
-            <InputNumber v-model="wilayah2" mode="decimal" class="w-full"></InputNumber>
+            <InputNumber :step="5" :min="0" :max="100" v-model="wilayah2" mode="decimal" class="w-full"></InputNumber>
           </div>
           <div class="w-full md:w-1/4 pr-4 pb-4">
             <div class="font-semibold">Poin Wilayah 3</div>
-            <InputNumber v-model="wilayah3" mode="decimal" class="w-full"></InputNumber>
+            <InputNumber :step="5" :min="0" :max="100" v-model="wilayah3" mode="decimal" class="w-full"></InputNumber>
           </div>
           <div class="w-full md:w-1/4 pr-4 pb-4">
             <div class="font-semibold">Poin Wilayah 4</div>
-            <InputNumber v-model="wilayah4" mode="decimal" class="w-full"></InputNumber>
+            <InputNumber :step="5" :min="0" :max="100" v-model="wilayah4" mode="decimal" class="w-full"></InputNumber>
           </div>
           <div class="w-full md:w-1/4 pr-4 pb-4">
             <div class="font-semibold">Poin Wilayah 5</div>
-            <InputNumber v-model="wilayah5" mode="decimal" class="w-full"></InputNumber>
+            <InputNumber :step="5" :min="0" :max="100" v-model="wilayah5" mode="decimal" class="w-full"></InputNumber>
           </div>
           <div class="w-full md:w-1/4 pr-4 pb-4">
             <div class="font-semibold">Poin Wilayah 6</div>
-            <InputNumber v-model="wilayah6" mode="decimal" class="w-full"></InputNumber>
+            <InputNumber :step="5" :min="0" :max="100" v-model="wilayah6" mode="decimal" class="w-full"></InputNumber>
           </div>
           <div class="w-full md:w-1/4 pr-4 pb-4">
             <div class="font-semibold">Poin Wilayah 7</div>
-            <InputNumber v-model="wilayah7" mode="decimal" class="w-full"></InputNumber>
+            <InputNumber :step="5" :min="0" :max="100" v-model="wilayah7" mode="decimal" class="w-full"></InputNumber>
           </div>
         </div>
         <div :class="{ 'text-green-500': totalPoints <= 100, 'text-red-500': totalPoints > 100 }" class="font-semibold">
@@ -580,13 +580,13 @@ const esti_options = [
 ];
 
 const totalPoints = computed(() => {
-  return wilayah1.value +
-    wilayah2.value +
-    wilayah3.value +
-    wilayah4.value +
-    wilayah5.value +
-    wilayah6.value +
-    wilayah7.value;
+  return Math.floor(wilayah1.value/5)*5 +
+    Math.floor(wilayah2.value/5)*5 +
+    Math.floor(wilayah3.value/5)*5 +
+    Math.floor(wilayah4.value/5)*5 +
+    Math.floor(wilayah5.value/5)*5 +
+    Math.floor(wilayah6.value/5)*5 +
+    Math.floor(wilayah7.value/5)*5;
 });
 
 
@@ -772,13 +772,13 @@ const SubmitPoints = async () => {
     }
     const docRef = await addDoc(collection(db, "response-points"), {
       user: uid.value,
-      wil_1: wilayah1.value,
-      wil_2: wilayah2.value,
-      wil_3: wilayah3.value,
-      wil_4: wilayah4.value,
-      wil_5: wilayah5.value,
-      wil_6: wilayah6.value,
-      wil_7: wilayah7.value,
+      wil_1: Math.floor(wilayah1.value/5)*5,
+      wil_2: Math.floor(wilayah2.value/5)*5,
+      wil_3: Math.floor(wilayah3.value/5)*5,
+      wil_4: Math.floor(wilayah4.value/5)*5 ,
+      wil_5: Math.floor(wilayah5.value/5)*5,
+      wil_6: Math.floor(wilayah6.value/5)*5,
+      wil_7: Math.floor(wilayah7.value/5)*5,
       timestamp: new Date(),
       ruang: ruang.value,
       team_name: teamName.value,

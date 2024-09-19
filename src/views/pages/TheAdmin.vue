@@ -140,16 +140,19 @@
     </div>
 
     <div class="card mt-6">
-        <div class="font-bold text-xl mb-4">
-            Team Stats
+        <div class="font-bold text-xl mb-4 flex justify-between items-center">
+            <div>
+                Team Stats
             <p class="font-normal text-lg">Showing stats for room : 
                 <span v-if="selectedRoom"> {{ selectedRoom.name }}</span>
                 <span v-else>-</span>
             </p>
+            </div>
             
+            <Button v-if="selectedRoom" outlined="true" :label="showStats ? 'Hide' : 'Show'" :icon="showStats ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showStats = !showStats" />
         </div>
 
-        <div v-if="selectedRoom">
+        <div v-if="selectedRoom && showStats">
             <DataTable :value="sortedTeamsInRoom" scrollable scrollHeight="800px" class="mt-6">
                 <template #empty>
                     Tidak ada riwayat.
@@ -160,7 +163,7 @@
                             <button v-if="slotProps.data.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.data.side.color}`">{{ slotProps.data.data.side.code }}</button>
                             <span v-else class="text-red-500">no side assigned</span>
                         </span>
-                        <p class="font-normal italic">{{ slotProps.data.id }}</p>
+                        <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.id }}</p>
 
                     </template>
                 </Column>
@@ -197,14 +200,23 @@
 
     <div class="mt-6">
         <div class="card">
-            <div class="font-semibold text-xl mb-4">Submisi Jawab Soal</div>
-            <div v-if="selectedRoom">
-                <DataTable :value="soalResponses" scrollable scrollHeight="800px" class="mt-6">
+            <div class="flex justify-between">
+                <div class="font-semibold text-xl mb-4">Submisi Jawab Soal</div>
+                <Button v-if="selectedRoom" outlined="true" :label="showSoal ? 'Hide' : 'Show'" :icon="showSoal ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showSoal = !showSoal" />
+            </div>
+            <div v-if="selectedRoom && showSoal">
+                <DataTable :value="enhancedSoalResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
-                    <Column field="ruang" header="Ruang" style="min-width: 20px"> </Column>
                     <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
+                        <template #body="slotProps">
+                            <p>{{ slotProps.data.team_name }}</p>
+                            <button v-if="slotProps.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code }}</button>
+                            <span v-else class="text-red-500">no side assigned</span>
+                            <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.user }}</p>
+
+                        </template>
                     </Column>
                     <Column field="timestamp" header="Waktu" style="min-width: 100px">
                         <template #body="slotProps">
@@ -220,19 +232,26 @@
                     </Column>
                 </DataTable>
             </div>
-            <div v-else>Pilih Ruangan dulu woi >:(</div>
         </div>
 
 
         <div class="card">
-            <div class="font-semibold text-xl mb-4">Submisi Bagi Wilayah</div>
-            <div v-if="selectedRoom">
-                <DataTable :value="pointsResponses" scrollable scrollHeight="800px" class="mt-6">
+            <div class="flex justify-between">
+                <div class="font-semibold text-xl mb-4">Submisi Bagi Wilayah</div>
+                <Button v-if="selectedRoom" outlined="true" :label="showBagiWilayah ? 'Hide' : 'Show'" :icon="showBagiWilayah ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showBagiWilayah = !showBagiWilayah" />
+            </div>
+            <div v-if="selectedRoom && showBagiWilayah">
+                <DataTable :value="enhancedPointsResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
-                    <Column field="ruang" header="Ruang" style="min-width: 20px"> </Column>
                     <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
+                        <template #body="slotProps">
+                            <p>{{ slotProps.data.team_name }}</p>
+                            <button v-if="slotProps.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code }}</button>
+                            <span v-else class="text-red-500">no side assigned</span>
+                            <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.user }}</p>
+                        </template>
                     </Column>
                     <Column field="timestamp" header="Waktu" style="min-width: 100px">
                         <template #body="slotProps">
@@ -241,27 +260,32 @@
                     </Column>
                     <Column field="jawaban" header="Jawaban" style="min-width: 100px">
                         <template #body="slotProps">
-                            <p>Wil 1: {{ slotProps.data.wil_1 }} Wil 2: {{ slotProps.data.wil_2 }}</p>
-                            <p>Wil 3: {{ slotProps.data.wil_3 }} Wil 4: {{ slotProps.data.wil_4 }}</p>
-                            <p>Wil 5: {{ slotProps.data.wil_5 }} Wil 6: {{ slotProps.data.wil_6 }}</p>
-                            <p>Wil 7: {{ slotProps.data.wil_7 }}</p>
+                            <p>Wil 1: {{ slotProps.data.wil_1 }} Wil 2: {{ slotProps.data.wil_2 }} Wil 3: {{ slotProps.data.wil_3 }} Wil 4: {{ slotProps.data.wil_4 }}</p>
+                            <p>Wil 5: {{ slotProps.data.wil_5 }} Wil 6: {{ slotProps.data.wil_6 }} Wil 7: {{ slotProps.data.wil_7 }}</p>
                         </template>
                     </Column>
                 </DataTable>
             </div>
-            <div v-else>Pilih Ruangan dulu woi >:(</div>
         </div>
 
 
         <div class="card">
-            <div class="font-semibold text-xl mb-4">Submisi Belanja Troops</div>
-            <div v-if="selectedRoom">
-                <DataTable :value="shopResponses" scrollable scrollHeight="800px" class="mt-6">
+            <div class="flex justify-between">
+                <div class="font-semibold text-xl mb-4">Submisi Belanja Troops</div>
+                <Button v-if="selectedRoom" outlined="true" :label="showShop ? 'Hide' : 'Show'" :icon="showShop ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showShop = !showShop" />
+            </div>
+            <div v-if="selectedRoom && showShop">
+                <DataTable :value="enhancedShopResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
-                    <Column field="ruang" header="Ruang" style="min-width: 20px"> </Column>
                     <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
+                        <template #body="slotProps">
+                            <p>{{ slotProps.data.team_name }}</p>
+                            <button v-if="slotProps.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code }}</button>
+                            <span v-else class="text-red-500">no side assigned</span>
+                            <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.user }}</p>
+                        </template>
                     </Column>
                     <Column field="timestamp" header="Waktu" style="min-width: 100px">
                         <template #body="slotProps">
@@ -270,25 +294,34 @@
                     </Column>
                     <Column field="jawaban" header="Jawaban" style="min-width: 100px">
                         <template #body="slotProps">
-                            <p>Jumlah Elsi: {{ slotProps.data.elsi_amount }}</p>
-                            <p>Jumlah Pisi: {{ slotProps.data.pisi_amount }}</p>
-                            <p>Jumlah Esti: {{ slotProps.data.esti_amount }}</p>
+                            <p>Elsi: {{ slotProps.data.elsi_amount }} Pisi: {{ slotProps.data.pisi_amount }} Esti: {{ slotProps.data.esti_amount }}</p>
                         </template>
                     </Column>
                 </DataTable>
             </div>
-            <div v-else>Pilih Ruangan dulu woi >:(</div>
         </div>
 
         <div class="card">
-            <div class="font-semibold text-xl mb-4">Submisi Belanja Troops</div>
-            <div v-if="selectedRoom">
-                <DataTable :value="troopsResponses" scrollable scrollHeight="800px" class="mt-6">
+            <div class="flex justify-between">
+                <div class="font-semibold text-xl mb-4">Submisi Place Troops</div>
+                <Button v-if="selectedRoom" outlined="true" :label="showPlace ? 'Hide' : 'Show'" :icon="showPlace ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showPlace = !showPlace" />
+            </div>
+            <div v-if="selectedRoom && showPlace">
+                <DataTable :value="enhancedTroopsResponses" scrollable scrollHeight="800px" class="mt-6">
                     <template #empty>
                         Tidak ada riwayat.
                     </template>
-                    <Column field="ruang" header="Ruang" style="min-width: 20px"> </Column>
                     <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
+                        <template #body="slotProps">
+                            <span>
+                                <p>{{ slotProps.data.team_name }}</p>
+                                <button v-if="slotProps.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code }}</button>
+                                <span v-else class="text-red-500">no side assigned</span>
+                                
+                        </span>
+                            
+                            <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.user }}</p>
+                        </template>
                     </Column>
                     <Column field="timestamp" header="Waktu" style="min-width: 100px">
                         <template #body="slotProps">
@@ -304,7 +337,6 @@
                     </Column>
                 </DataTable>
             </div>
-            <div v-else>Pilih Ruangan dulu woi >:(</div>
         </div>
     </div>
 
@@ -368,6 +400,11 @@ const teamName = ref("");
 const balance = ref(0);
 const ruang = ref(null);
 
+const showStats = ref(true);
+const showSoal = ref(false);
+const showBagiWilayah = ref(false);
+const showShop = ref(false);
+const showPlace = ref(false);
 
 onMounted(() => {
     onAuthStateChanged(auth, (user) => {
@@ -648,6 +685,85 @@ const blockPlaceTroops = async () => {
     }
 }
 
+const enhancedSoalResponses = computed(() => {
+  console.log('soalResponses:', soalResponses.value);
+  console.log('teamsInRoom:', teamsInRoom.value);
+  
+  if (!soalResponses.value || !teamsInRoom.value) return [];
+  
+  const enhanced = soalResponses.value.map(response => {
+    const team = teamsInRoom.value.find(team => team.id === response.user);
+    const result = {
+      ...response,
+      side: team ? team.data.side : null
+    };
+    console.log('Enhanced response:', result);
+    return result;
+  });
+  
+  console.log('Final enhancedSoalResponses:', enhanced);
+  return enhanced;
+});
+
+const enhancedPointsResponses = computed(() => {
+  console.log('pointsResponses:', pointsResponses.value);
+  console.log('teamsInRoom:', teamsInRoom.value);
+  
+  if (!pointsResponses.value || !teamsInRoom.value) return [];
+  
+  const enhanced = pointsResponses.value.map(response => {
+    const team = teamsInRoom.value.find(team => team.id === response.user);
+    const result = {
+        ...response,
+        side: team ? team.data.side : null
+    };
+    console.log('Enhanced response:', result);
+    return result;
+  });
+  
+  console.log('Final enhancedPointsResponses:', enhanced);
+  return enhanced;
+});
+
+const enhancedShopResponses = computed(() => {
+    console.log('shopResponses:', shopResponses.value);
+    console.log('teamsInRoom:', teamsInRoom.value);
+    
+    if (!shopResponses.value || !teamsInRoom.value) return [];
+    
+    const enhanced = shopResponses.value.map(response => {
+        const team = teamsInRoom.value.find(team => team.id === response.user);
+        const result = {
+            ...response,
+            side: team ? team.data.side : null
+        };
+        console.log('Enhanced response:', result);
+        return result;
+    });
+    
+    console.log('Final enhancedShopResponses:', enhanced);
+    return enhanced;
+});
+
+const enhancedTroopsResponses = computed(() => {
+    console.log('troopsResponses:', troopsResponses.value);
+    console.log('teamsInRoom:', teamsInRoom.value);
+    
+    if (!troopsResponses.value || !teamsInRoom.value) return [];
+    
+    const enhanced = troopsResponses.value.map(response => {
+        const team = teamsInRoom.value.find(team => team.id === response.user);
+        const result = {
+            ...response,
+            side: team ? team.data.side : null
+        };
+        console.log('Enhanced response:', result);
+        return result;
+    });
+    
+    console.log('Final enhancedTroopsResponses:', enhanced);
+    return enhanced;
+});
 
 
 let unsubscribeSoal;
@@ -788,10 +904,10 @@ onMounted( () => {
   text-align: center;
   text-decoration: none;
   display: flex;
-  font-size: 16px;
+  font-size: 14px;
   border-radius: 25%;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   align-items: center;
   justify-content: center;
   font-weight: bold;
