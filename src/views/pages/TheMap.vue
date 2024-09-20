@@ -698,7 +698,7 @@ const updateColor = async (newColor) => {
             [clickedArea.value]: {
                 color: newColor,
                 poin_wilayah: mapState.value[clickedArea.value]?.poin_wilayah ?? 0,
-                poin_troops: 0,
+                poin_troops: mapState.value[clickedArea.value]?.poin_troops ?? 0,
             }
         })
     }
