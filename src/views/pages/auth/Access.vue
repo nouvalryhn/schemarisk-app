@@ -1,5 +1,34 @@
 <script setup>
 import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
+import { getAuth, onAuthStateChanged, signOut} from "firebase/auth";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+
+let auth;
+const router = useRouter();
+
+let isLoggedIn = ref(false);
+onMounted(() => {
+    auth = getAuth();
+    onAuthStateChanged(auth, (user) =>{
+        if (user){
+            isLoggedIn.value = true;
+        }
+        else {
+            isLoggedIn.value = false;
+        }
+    });
+});
+
+const handleLogin = () => {
+    if (isLoggedIn.value){
+        signOut(auth).then(() => {
+            router.push("/login");
+        });
+    }else {
+        router.push("/login");
+    }
+};
 </script>
 
 <template>
@@ -16,7 +45,7 @@ import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
                         <span class="text-muted-color mb-8">You do not have the necessary permisions. Please contact admins.</span>
                         <img src="/demo/images/access/asset-access.svg" alt="Access denied" class="mb-8" width="80%" />
                         <div class="col-span-12 mt-8 text-center">
-                            <Button as="router-link" label="Go to Login Page" to="/login" severity="warn" />
+                            <Button label="Go to Login Page" severity="warn" @click="handleLogin" />
                         </div>
                     </div>
                 </div>

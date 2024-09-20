@@ -188,31 +188,34 @@ const isUserAdmin = async (uid) => {
 
 }
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const auth = getAuth();
 
-    // Wait for Firebase auth state to be determined
-    onAuthStateChanged(auth, async (user) => {
-        if (to.matched.some((record) => record.meta.requiresAuth)) {
-            if (user) {
-                if (to.matched.some((record) => record.meta.requiresAdmin)){
-                    if(await isUserAdmin(auth.currentUser.uid)){
-                        next();
-                    }
-                    else{
-                        next("/auth/access");
-                    }
-                }else{
+    // Create a promise that resolves when the auth state is determined
+    const user = await new Promise((resolve) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            unsubscribe();
+            resolve(user);
+        });
+    });
+
+    if (to.matched.some((record) => record.meta.requiresAuth)) {
+        if (user) {
+            if (to.matched.some((record) => record.meta.requiresAdmin)) {
+                if (await isUserAdmin(user.uid)) {
                     next();
+                } else {
+                    next("/auth/access");
                 }
-                
             } else {
-                next("/login"); // Redirect to login page
+                next();
             }
         } else {
-            next();
+            next("/login");
         }
-    });
+    } else {
+        next();
+    }
 });
 
 export default router;

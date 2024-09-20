@@ -41,7 +41,7 @@ const handleSignOut = () => {
 
                 <img src="/public/images/logo.png" style="max-height: 40px;">
 
-                <span>Schemarisk Game</span>
+                <span>Schemarisk</span>
             </router-link>
         </div>
 
