@@ -94,12 +94,12 @@ const selectedRoom = ref();
 const startingbalance = ref(0);
 
 const sideColors = {
-  A: "#ef476f",
-  B: "#f78c6b",
-  C: "#ffd166",
-  D: "#06d6a0",
-  E: "#118ab2",
-  F: "#073b4c"
+  A: "rgba(239, 71, 111, 1)",
+  B: "rgba(247, 140, 107, 1)",
+  C: "rgba(255, 209, 102, 1)",
+  D: "rgba(6, 214, 160, 1)",
+  E: "rgba(17, 138, 178, 1)",
+  F: "rgba(7, 59, 76, 1)"
 };
 
 const sideOptions = computed(() => 

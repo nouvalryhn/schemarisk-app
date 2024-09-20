@@ -84,7 +84,7 @@
       </div>
       <div v-else>
         <div class="top-0 left-0 w-full h-20 rounded bg-black bg-opacity-50 flex justify-center items-center">
-          <div class="text-white text-lg font-bold ">Tim Anda sudah menjawab soal pada ronde ini / Waktu Jawab Soal Sudah Habis</div>
+          <div class="text-white text-lg font-bold ">Bukan Fase Menjawab Soal / Tim Anda sudah menjawab soal pada ronde ini</div>
         </div>
       </div>
     </div>
@@ -178,7 +178,7 @@
       </div>
       <div v-else>
         <div class="top-0 left-0 w-full h-20 rounded bg-black bg-opacity-50 flex justify-center items-center">
-          <div class="text-white text-lg font-bold ">Tim Anda sudah membeli troops pada ronde ini / Waktu Belanja Sudah Habis</div>
+          <div class="text-white text-lg font-bold ">Bukan Fase Belanja Troops / Tim Anda sudah membeli troops pada ronde ini</div>
         </div>
       </div>
     </div>
@@ -262,12 +262,12 @@
       </div>
       <div v-else>
         <div class="top-0 left-0 w-full h-20 rounded bg-black bg-opacity-50 flex justify-center items-center">
-          <div class="text-white text-lg font-bold ">Tim Anda sudah menempatkan troops pada ronde ini / Waktu Menempatkan Troops Sudah Habis</div>
+          <div class="text-white text-lg font-bold ">Bukan Fase Menempatkan Troops / Tim Anda sudah menempatkan troops pada ronde ini</div>
         </div>
       </div>
     </div>
-    <div v-if="showForm === 'serang-wilayah'">
-      <!-- <p class="font-semibold text-lg mb-2">Hajar wilayah yang kamu miliki</p>
+    <!-- <div v-if="showForm === 'serang-wilayah'">
+      <p class="font-semibold text-lg mb-2">Hajar wilayah yang kamu miliki</p>
       <div class="flex flex-col md:flex-row gap-4">
         <div class="flex flex-col gap-4 max-w-md md:w-1/2">
           <div class="grid grid-cols-12 gap-2">
@@ -277,9 +277,9 @@
             </div>
           </div>
         </div>
-      </div> -->
+      </div>
       <p>blom implement, infokan gaji nopal solo dev</p>
-    </div>
+    </div> -->
   </div>
 
   <div class="card">
@@ -368,14 +368,14 @@ const showForm = ref(null);
 const activeButton = ref();
 const buttons = [
   {
-    label: "Jawab Soal",
-    icon: "pi pi-pencil",
-    id: "jawab-soal"
-  },
-  {
     label: "Bagi Poin Wilayahmu",
     icon: "pi pi-map-marker",
     id: "bagi-wilayah",
+  },
+  {
+    label: "Jawab Soal",
+    icon: "pi pi-pencil",
+    id: "jawab-soal"
   },
   {
     label: "Belanja Troops",
@@ -387,11 +387,11 @@ const buttons = [
     icon: "pi pi-users",
     id: "place-troops",
   },
-  {
-    label: "Hajar Wilayah",
-    icon: "pi pi-map",
-    id: "serang-wilayah",
-  },
+  // {
+  //   label: "Hajar Wilayah",
+  //   icon: "pi pi-map",
+  //   id: "serang-wilayah",
+  // },
 ];
 
 // Form fields
