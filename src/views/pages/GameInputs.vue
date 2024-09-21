@@ -423,7 +423,10 @@ const addToChanges = () => {
   }
 
   const areaKey = `${selectedSide.value}${selectedArea.value}`;
-  const isValidPlacement = mapState.value[areaKey]?.color === side.value.color;
+
+  console.log("state", mapState.value[areaKey]?.color);
+  console.log("side", side.value.color);
+  const isValidPlacement = mapState.value[areaKey]?.color == side.value.color;
 
   const newChange = {
     area: areaKey,
@@ -434,6 +437,7 @@ const addToChanges = () => {
   };
 
   troopChanges.value.push(newChange);
+  console.log("troopChanges: ", newChange);
 
   // Reset the input fields
   selectedSide.value = '';
@@ -622,6 +626,7 @@ const setupFirestoreListener = (userId) => {
     (doc) => {
       if (doc.exists()) {
         const data = doc.data();
+        console.log("userdata: ", data);
         teamName.value = data.team_name || "";
         balance.value = data.balance || 0;
         ruang.value = data.ruang || "";

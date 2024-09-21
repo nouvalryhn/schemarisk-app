@@ -716,7 +716,7 @@ const freezeArea = () => {
 
         updateDoc(poinRef, {
             [clickedArea.value]: {
-                color: increaseAlpha(currentColor, -0.5),
+                color: setAlpha(currentColor, 0.5),
                 poin_troops: mapState.value[clickedArea.value]?.poin_troops ?? 0,
                 poin_wilayah: mapState.value[clickedArea.value]?.poin_wilayah ?? 0,
             }
@@ -745,7 +745,7 @@ const unfreezeArea = () => {
 
         updateDoc(poinRef, {
             [clickedArea.value]: {
-                color: increaseAlpha(currentColor, 0.5),
+                color: setAlpha(currentColor, 1),
                 poin_troops: mapState.value[clickedArea.value]?.poin_troops ?? 0,
                 poin_wilayah: mapState.value[clickedArea.value]?.poin_wilayah ?? 0,
             }
@@ -755,14 +755,13 @@ const unfreezeArea = () => {
     }
 }
 
-const increaseAlpha = (rgbaColor, increment) => {
+const setAlpha = (rgbaColor, newAlpha) => {
     const rgbaRegex = /rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/;
     const match = rgbaColor.match(rgbaRegex);
 
     if (match) {
         const [, r, g, b, a] = match;
-        const newAlpha = Math.min(1, Math.max(0, parseFloat(a) + increment));
-        return `rgba(${r}, ${g}, ${b}, ${newAlpha.toFixed(2)})`;
+        return `rgba(${r}, ${g}, ${b}, ${newAlpha})`;
     }
 
     return rgbaColor;
