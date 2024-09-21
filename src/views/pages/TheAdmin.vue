@@ -673,7 +673,12 @@ const blockPlaceTroops = async () => {
         const batch = writeBatch(db);
         
         querySnapshot.forEach((doc) => {
-            batch.update(doc.ref, { hasPlaceTroops: true });
+            batch.update(doc.ref, { 
+                hasPlaceTroops: true,
+                elsi_bal: 0,
+                pisi_bal: 0,
+                esti_bal: 0
+            });
         });
         
         await batch.commit();
