@@ -10,18 +10,10 @@
                 <br>
                 <div>
                     <label for="room" class="block text-lg">Select Room to Show</label>
-                    <Select id="room" :options="rooms" scrollHeight="230px" optionLabel="name" class="w-full md:w-[15rem]" showClear
+                    <Select id="room" :options="rooms" scrollHeight="230px" optionLabel="name" class="w-full md:w-[15rem] mr-2" showClear
                         placeholder="Pilih Ruangan" v-model="selectedRoom" />
                 </div>
             <div class="mt-2">
-                <Button 
-                    :label="selectedRoomMapFrozen ? 'Unfreeze Map' : 'Freeze Map'" 
-                    :icon="selectedRoomMapFrozen ? 'pi pi-lock-open' : 'pi pi-lock'" 
-                    @click="toggleMapFreeze" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    :severity="selectedRoomMapFrozen ? 'info' : 'danger'"
-                />
                 <Button 
                     label="Izinkan Bagi Poin Wilayah" 
                     icon="pi pi-map-marker" 
@@ -29,6 +21,14 @@
                     v-if="selectedRoom"
                     class="p-button mr-2"
                     severity="info"
+                />
+                <Button 
+                    label="Blokir Bagi Poin Wilayah" 
+                    icon="pi pi-map-marker" 
+                    @click="blockBagiPoin" 
+                    v-if="selectedRoom"
+                    class="p-button mr-2"
+                    severity="danger"
                 />
             </div>
             <div class="mt-2 mb-2">
@@ -550,6 +550,27 @@ const allowBagiPoin = async () => {
         await batch.commit();
         
         toast.add({ severity: 'success', summary: 'Success', detail: 'Bagi Poin diizinkan untuk semua tim', life: 3000 });
+    } catch (e) {
+        console.error("Error setting allowBagiPoin :", e);
+    }
+}
+
+const blockBagiPoin = async () => {
+    try {
+        console.log("Allowing Bagi Poin for room:", selectedRoom.value.code);
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
+        const querySnapshot = await getDocs(q);
+        
+        const batch = writeBatch(db);
+        
+        querySnapshot.forEach((doc) => {
+            batch.update(doc.ref, { hasBagiPoin: true });
+        });
+        
+        await batch.commit();
+        
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Bagi Poin diblok untuk semua tim', life: 3000 });
     } catch (e) {
         console.error("Error setting allowBagiPoin :", e);
     }
