@@ -15,15 +15,15 @@
                 </div>
             <div class="mt-2">
                 <Button 
-                    label="Izinkan Bagi Poin Wilayah" 
+                    label="Izinkan Bagi Poin" 
                     icon="pi pi-map-marker" 
                     @click="allowBagiPoin" 
                     v-if="selectedRoom"
-                    class="p-button mr-2 mb-2"
+                    class="p-button mr-2"
                     severity="info"
                 />
                 <Button 
-                    label="Blokir Bagi Poin Wilayah" 
+                    label="Blokir Bagi Poin" 
                     icon="pi pi-map-marker" 
                     @click="blockBagiPoin" 
                     v-if="selectedRoom"
