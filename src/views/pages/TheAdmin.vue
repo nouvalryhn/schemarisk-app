@@ -19,7 +19,7 @@
                     icon="pi pi-map-marker" 
                     @click="allowBagiPoin" 
                     v-if="selectedRoom"
-                    class="p-button mr-2"
+                    class="p-button mr-2 mb-2"
                     severity="info"
                 />
                 <Button 

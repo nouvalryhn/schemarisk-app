@@ -147,10 +147,10 @@ const register = async () => {
                         elsi_bal: 0,
                         pisi_bal: 0,
                         esti_bal: 0,
-                        hasBagiPoin: false,
-                        hasPlaceTroops: false,
-                        hasBelanjaTroops: false,
-                        hasJawabSoal: false,
+                        hasBagiPoin: true,
+                        hasPlaceTroops: true,
+                        hasBelanjaTroops: true,
+                        hasJawabSoal: true,
                         side: side.value,
                     });
                 } catch (e) {
