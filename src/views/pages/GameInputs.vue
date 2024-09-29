@@ -430,9 +430,9 @@ const addToChanges = () => {
 
   const newChange = {
     area: areaKey,
-    elsi: placeElsiAmount.value,
-    pisi: placePisiAmount.value,
-    esti: placeEstiAmount.value,
+    elsi: placeElsiAmount.value || 0,
+    pisi: placePisiAmount.value || 0,
+    esti: placeEstiAmount.value || 0,
     valid: isValidPlacement
   };
 
