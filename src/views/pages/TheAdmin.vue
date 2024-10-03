@@ -10,80 +10,32 @@
                 <br>
                 <div>
                     <label for="room" class="block text-lg">Select Room to Show</label>
-                    <Select id="room" :options="rooms" scrollHeight="230px" optionLabel="name" class="w-full md:w-[15rem] mr-2" showClear
-                        placeholder="Pilih Ruangan" v-model="selectedRoom" />
+                    <Select id="room" :options="rooms" scrollHeight="230px" optionLabel="name"
+                        class="w-full md:w-[15rem] mr-2" showClear placeholder="Pilih Ruangan" v-model="selectedRoom" />
                 </div>
-            <div class="mt-2">
-                <Button 
-                    label="Izinkan Bagi Poin" 
-                    icon="pi pi-map-marker" 
-                    @click="allowBagiPoin" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    severity="info"
-                />
-                <Button 
-                    label="Blokir Bagi Poin" 
-                    icon="pi pi-map-marker" 
-                    @click="blockBagiPoin" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    severity="danger"
-                />
-            </div>
-            <div class="mt-2 mb-2">
-                <Button 
-                    label="Izinkan Jawab Soal" 
-                    icon="pi pi-pencil" 
-                    @click="allowJawabSoal" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    severity="success"
-                /><Button 
-                    label="Blokir Jawab Soal" 
-                    icon="pi pi-pencil" 
-                    @click="blockJawabSoal" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    severity="danger"
-                />
-            </div>
-            <div class="mt-2 mb-2">
-                <Button 
-                    label="Izinkan Belanja Troops" 
-                    icon="pi pi-shopping-cart" 
-                    @click="allowBelanjaTroops" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    severity="success"
-                />
-                <Button 
-                    label="Blokir Belanja Troops" 
-                    icon="pi pi-shopping-cart" 
-                    @click="blockBelanjaTroops" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    severity="danger"
-                />
-            </div>
-            <div class="mt-2 mb-2">
-                <Button 
-                    label="Izinkan Place Troops" 
-                    icon="pi pi-users" 
-                    @click="allowPlaceTroops" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    severity="success"
-                />
-                <Button 
-                    label="Blokir Place Troops" 
-                    icon="pi pi-users" 
-                    @click="blockPlaceTroops" 
-                    v-if="selectedRoom"
-                    class="p-button mr-2"
-                    severity="danger"
-                />
-            </div>
+                <div class="mt-2">
+                    <Button label="Izinkan Bagi Poin" icon="pi pi-map-marker" @click="allowBagiPoin" v-if="selectedRoom"
+                        class="p-button mr-2" severity="info" />
+                    <Button label="Blokir Bagi Poin" icon="pi pi-map-marker" @click="blockBagiPoin" v-if="selectedRoom"
+                        class="p-button mr-2" severity="danger" />
+                </div>
+                <div class="mt-2 mb-2">
+                    <Button label="Izinkan Jawab Soal" icon="pi pi-pencil" @click="allowJawabSoal" v-if="selectedRoom"
+                        class="p-button mr-2" severity="success" /><Button label="Blokir Jawab Soal" icon="pi pi-pencil"
+                        @click="blockJawabSoal" v-if="selectedRoom" class="p-button mr-2" severity="danger" />
+                </div>
+                <div class="mt-2 mb-2">
+                    <Button label="Izinkan Belanja Troops" icon="pi pi-shopping-cart" @click="allowBelanjaTroops"
+                        v-if="selectedRoom" class="p-button mr-2" severity="success" />
+                    <Button label="Blokir Belanja Troops" icon="pi pi-shopping-cart" @click="blockBelanjaTroops"
+                        v-if="selectedRoom" class="p-button mr-2" severity="danger" />
+                </div>
+                <div class="mt-2 mb-2">
+                    <Button label="Izinkan Place Troops" icon="pi pi-users" @click="allowPlaceTroops"
+                        v-if="selectedRoom" class="p-button mr-2" severity="success" />
+                    <Button label="Blokir Place Troops" icon="pi pi-users" @click="blockPlaceTroops" v-if="selectedRoom"
+                        class="p-button mr-2" severity="danger" />
+                </div>
             </div>
         </div>
 
@@ -95,7 +47,7 @@
                     <p class="mb-2 text-lg">Update Atribut Tim</p>
 
                     <div v-if="selectedRoom">
-                        Select Team: 
+                        Select Team:
                         <select v-model="selectedTeam" class="m-2">
                             <option value="" disabled>Pilih Tim</option>
                             <option v-for="team in teamsInRoom" :key="team.data.team_name" :value="team">
@@ -107,29 +59,42 @@
                             <div>
                                 <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Neleci" @click="setBalance"></Button>
-                                <span class="m-2" :class="{ 'text-green-500': setBalanceAmount > selectedTeam.data.balance, 'text-red-500': setBalanceAmount < selectedTeam.data.balance }" v-if="setBalanceAmount != selectedTeam.data.balance">Neleci: {{ selectedTeam.data.balance }} &rarr; {{ setBalanceAmount }}</span>
+                                <span class="m-2"
+                                    :class="{ 'text-green-500': setBalanceAmount > selectedTeam.data.balance, 'text-red-500': setBalanceAmount < selectedTeam.data.balance }"
+                                    v-if="setBalanceAmount != selectedTeam.data.balance">Neleci: {{
+                                    selectedTeam.data.balance }} &rarr; {{ setBalanceAmount }}</span>
                             </div>
-                            
+
                             <div>
                                 <InputNumber v-model="setElsiAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Elsi" @click="setElsi"></Button>
-                                <span class="m-2" :class="{ 'text-green-500': setElsiAmount > selectedTeam.data.elsi_bal, 'text-red-500': setElsiAmount < selectedTeam.data.elsi_bal }" v-if="setElsiAmount != selectedTeam.data.elsi_bal">Elsi: {{ selectedTeam.data.elsi_bal }} &rarr; {{ setElsiAmount }}</span>
+                                <span class="m-2"
+                                    :class="{ 'text-green-500': setElsiAmount > selectedTeam.data.elsi_bal, 'text-red-500': setElsiAmount < selectedTeam.data.elsi_bal }"
+                                    v-if="setElsiAmount != selectedTeam.data.elsi_bal">Elsi: {{
+                                    selectedTeam.data.elsi_bal }} &rarr; {{ setElsiAmount }}</span>
                             </div>
-                            
+
                             <div>
                                 <InputNumber v-model="setPisiAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Pisi" @click="setPisi"></Button>
-                                <span class="m-2" :class="{ 'text-green-500': setPisiAmount > selectedTeam.data.pisi_bal, 'text-red-500': setPisiAmount < selectedTeam.data.pisi_bal }" v-if="setPisiAmount != selectedTeam.data.pisi_bal">Pisi: {{ selectedTeam.data.pisi_bal }} &rarr; {{ setPisiAmount }}</span>
-                            </div> 
+                                <span class="m-2"
+                                    :class="{ 'text-green-500': setPisiAmount > selectedTeam.data.pisi_bal, 'text-red-500': setPisiAmount < selectedTeam.data.pisi_bal }"
+                                    v-if="setPisiAmount != selectedTeam.data.pisi_bal">Pisi: {{
+                                    selectedTeam.data.pisi_bal }} &rarr; {{ setPisiAmount }}</span>
+                            </div>
 
                             <div>
                                 <InputNumber v-model="setEstiAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Esti" @click="setEsti"></Button>
-                                <span class="m-2" :class="{ 'text-green-500': setEstiAmount > selectedTeam.data.esti_bal, 'text-red-500': setEstiAmount < selectedTeam.data.esti_bal }" v-if="setEstiAmount != selectedTeam.data.esti_bal">Esti: {{ selectedTeam.data.esti_bal }} &rarr; {{ setEstiAmount }}</span>
+                                <span class="m-2"
+                                    :class="{ 'text-green-500': setEstiAmount > selectedTeam.data.esti_bal, 'text-red-500': setEstiAmount < selectedTeam.data.esti_bal }"
+                                    v-if="setEstiAmount != selectedTeam.data.esti_bal">Esti: {{
+                                    selectedTeam.data.esti_bal }} &rarr; {{ setEstiAmount }}</span>
                             </div>
-                            
 
-                            <p>Updating Tim : {{ selectedTeam.data.team_name }} <span class="font-normal italic">({{ selectedTeam.id }})</span></p>
+
+                            <p>Updating Tim : {{ selectedTeam.data.team_name }} <span class="font-normal italic">({{
+                                    selectedTeam.id }})</span></p>
 
                         </div>
                     </div>
@@ -143,13 +108,14 @@
         <div class="font-bold text-xl mb-4 flex justify-between items-center">
             <div>
                 Team Stats
-            <p class="font-normal text-lg">Showing stats for room : 
-                <span v-if="selectedRoom"> {{ selectedRoom.name }}</span>
-                <span v-else>-</span>
-            </p>
+                <p class="font-normal text-lg">Showing stats for room :
+                    <span v-if="selectedRoom"> {{ selectedRoom.name }}</span>
+                    <span v-else>-</span>
+                </p>
             </div>
-            
-            <Button v-if="selectedRoom" outlined="true" :label="showStats ? 'Hide' : 'Show'" :icon="showStats ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showStats = !showStats" />
+
+            <Button v-if="selectedRoom" outlined="true" :label="showStats ? 'Hide' : 'Show'"
+                :icon="showStats ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showStats = !showStats" />
         </div>
 
         <div v-if="selectedRoom && showStats">
@@ -160,7 +126,9 @@
                 <Column header="Team" style="min-width: 100px" class="font-bold">
                     <template #body="slotProps">
                         <span class="">{{ slotProps.data.data.team_name }}
-                            <button v-if="slotProps.data.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.data.side.color}`">{{ slotProps.data.data.side.code }}</button>
+                            <button v-if="slotProps.data.data.side" class="colorbtn"
+                                :style="`background-color: ${slotProps.data.data.side.color}`">{{
+                                slotProps.data.data.side.code }}</button>
                             <span v-else class="text-red-500">no side assigned</span>
                         </span>
                         <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.id }}</p>
@@ -193,7 +161,7 @@
                         <p>Place: {{ slotProps.data.data.hasPlaceTroops }}</p>
                     </template>
                 </Column>
-                
+
             </DataTable>
         </div>
     </div>
@@ -202,7 +170,8 @@
         <div class="card">
             <div class="flex justify-between">
                 <div class="font-semibold text-xl mb-4">Submisi Jawab Soal</div>
-                <Button v-if="selectedRoom" outlined="true" :label="showSoal ? 'Hide' : 'Show'" :icon="showSoal ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showSoal = !showSoal" />
+                <Button v-if="selectedRoom" outlined="true" :label="showSoal ? 'Hide' : 'Show'"
+                    :icon="showSoal ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showSoal = !showSoal" />
             </div>
             <div v-if="selectedRoom && showSoal">
                 <DataTable :value="enhancedSoalResponses" scrollable scrollHeight="800px" class="mt-6">
@@ -212,7 +181,9 @@
                     <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
                         <template #body="slotProps">
                             <p>{{ slotProps.data.team_name }}</p>
-                            <button v-if="slotProps.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code }}</button>
+                            <button v-if="slotProps.data.side" class="colorbtn"
+                                :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code
+                                }}</button>
                             <span v-else class="text-red-500">no side assigned</span>
                             <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.user }}</p>
 
@@ -238,7 +209,9 @@
         <div class="card">
             <div class="flex justify-between">
                 <div class="font-semibold text-xl mb-4">Submisi Bagi Wilayah</div>
-                <Button v-if="selectedRoom" outlined="true" :label="showBagiWilayah ? 'Hide' : 'Show'" :icon="showBagiWilayah ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showBagiWilayah = !showBagiWilayah" />
+                <Button v-if="selectedRoom" outlined="true" :label="showBagiWilayah ? 'Hide' : 'Show'"
+                    :icon="showBagiWilayah ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                    @click="showBagiWilayah = !showBagiWilayah" />
             </div>
             <div v-if="selectedRoom && showBagiWilayah">
                 <DataTable :value="enhancedPointsResponses" scrollable scrollHeight="800px" class="mt-6">
@@ -248,7 +221,9 @@
                     <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
                         <template #body="slotProps">
                             <p>{{ slotProps.data.team_name }}</p>
-                            <button v-if="slotProps.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code }}</button>
+                            <button v-if="slotProps.data.side" class="colorbtn"
+                                :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code
+                                }}</button>
                             <span v-else class="text-red-500">no side assigned</span>
                             <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.user }}</p>
                         </template>
@@ -260,8 +235,10 @@
                     </Column>
                     <Column field="jawaban" header="Jawaban" style="min-width: 100px">
                         <template #body="slotProps">
-                            <p>Wil 1: {{ slotProps.data.wil_1 }} Wil 2: {{ slotProps.data.wil_2 }} Wil 3: {{ slotProps.data.wil_3 }} Wil 4: {{ slotProps.data.wil_4 }}</p>
-                            <p>Wil 5: {{ slotProps.data.wil_5 }} Wil 6: {{ slotProps.data.wil_6 }} Wil 7: {{ slotProps.data.wil_7 }}</p>
+                            <p>Wil 1: {{ slotProps.data.wil_1 }} Wil 2: {{ slotProps.data.wil_2 }} Wil 3: {{
+                                slotProps.data.wil_3 }} Wil 4: {{ slotProps.data.wil_4 }}</p>
+                            <p>Wil 5: {{ slotProps.data.wil_5 }} Wil 6: {{ slotProps.data.wil_6 }} Wil 7: {{
+                                slotProps.data.wil_7 }}</p>
                         </template>
                     </Column>
                 </DataTable>
@@ -272,7 +249,8 @@
         <div class="card">
             <div class="flex justify-between">
                 <div class="font-semibold text-xl mb-4">Submisi Belanja Troops</div>
-                <Button v-if="selectedRoom" outlined="true" :label="showShop ? 'Hide' : 'Show'" :icon="showShop ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showShop = !showShop" />
+                <Button v-if="selectedRoom" outlined="true" :label="showShop ? 'Hide' : 'Show'"
+                    :icon="showShop ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showShop = !showShop" />
             </div>
             <div v-if="selectedRoom && showShop">
                 <DataTable :value="enhancedShopResponses" scrollable scrollHeight="800px" class="mt-6">
@@ -282,7 +260,9 @@
                     <Column field="team_name" header="Nama Tim" style="min-width: 100px" class="font-bold">
                         <template #body="slotProps">
                             <p>{{ slotProps.data.team_name }}</p>
-                            <button v-if="slotProps.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code }}</button>
+                            <button v-if="slotProps.data.side" class="colorbtn"
+                                :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code
+                                }}</button>
                             <span v-else class="text-red-500">no side assigned</span>
                             <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.user }}</p>
                         </template>
@@ -294,7 +274,8 @@
                     </Column>
                     <Column field="jawaban" header="Jawaban" style="min-width: 100px">
                         <template #body="slotProps">
-                            <p>Elsi: {{ slotProps.data.elsi_amount }} Pisi: {{ slotProps.data.pisi_amount }} Esti: {{ slotProps.data.esti_amount }}</p>
+                            <p>Elsi: {{ slotProps.data.elsi_amount }} Pisi: {{ slotProps.data.pisi_amount }} Esti: {{
+                                slotProps.data.esti_amount }}</p>
                         </template>
                     </Column>
                 </DataTable>
@@ -304,7 +285,8 @@
         <div class="card">
             <div class="flex justify-between">
                 <div class="font-semibold text-xl mb-4">Submisi Place Troops</div>
-                <Button v-if="selectedRoom" outlined="true" :label="showPlace ? 'Hide' : 'Show'" :icon="showPlace ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showPlace = !showPlace" />
+                <Button v-if="selectedRoom" outlined="true" :label="showPlace ? 'Hide' : 'Show'"
+                    :icon="showPlace ? 'pi pi-eye-slash' : 'pi pi-eye'" @click="showPlace = !showPlace" />
             </div>
             <div v-if="selectedRoom && showPlace">
                 <DataTable :value="enhancedTroopsResponses" scrollable scrollHeight="800px" class="mt-6">
@@ -315,11 +297,13 @@
                         <template #body="slotProps">
                             <span>
                                 <p>{{ slotProps.data.team_name }}</p>
-                                <button v-if="slotProps.data.side" class="colorbtn" :style="`background-color: ${slotProps.data.side.color}`">{{ slotProps.data.side.code }}</button>
+                                <button v-if="slotProps.data.side" class="colorbtn"
+                                    :style="`background-color: ${slotProps.data.side.color}`">{{
+                                    slotProps.data.side.code }}</button>
                                 <span v-else class="text-red-500">no side assigned</span>
-                                
-                        </span>
-                            
+
+                            </span>
+
                             <p style="font-size: 0.8rem; color: #888;">{{ slotProps.data.user }}</p>
                         </template>
                     </Column>
@@ -460,7 +444,7 @@ const selectedTeam = ref();
 const documents = ref([]);
 
 watch(selectedTeam, () => {
-    if (selectedTeam.value){
+    if (selectedTeam.value) {
         console.log(selectedTeam.value);
         setBalanceAmount.value = selectedTeam.value.data.balance;
         setElsiAmount.value = selectedTeam.value.data.elsi_bal;
@@ -471,68 +455,72 @@ watch(selectedTeam, () => {
 
 const queryTeams = async (selected) => {
     const q = query(collection(db, 'users'), where('ruang', '==', selected));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
         documents.value = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          data: doc.data()
+            id: doc.id,
+            data: doc.data()
         }));
         teamsInRoom.value = documents.value;
 
         console.log("team in room:", teamsInRoom.value);
-      }, (error) => {
+    }, (error) => {
         console.error("Error listening to documents: ", error);
-      });
+    });
 
-      return unsubscribe;
+    return unsubscribe;
 }
 
 const setBalance = async () => {
-        try {
-            console.log("attempt to update neleci uid:", selectedTeam.value.id, "amount: ", setBalanceAmount.value)
-            let balanceRef = doc(db, "users", selectedTeam.value.id);
-            await updateDoc(balanceRef, {
-                balance : (setBalanceAmount.value),
-            });
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Neleci berhasil diubah', life: 3000 });
-      } catch (e) {
+    try {
+        console.log("attempt to update neleci uid:", selectedTeam.value.id, "amount: ", setBalanceAmount.value)
+        let balanceRef = doc(db, "users", selectedTeam.value.id);
+        await updateDoc(balanceRef, {
+            balance: (setBalanceAmount.value),
+        });
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Neleci berhasil diubah', life: 3000 });
+    } catch (e) {
         console.error("Error setting neleci :", e);
-}}
+    }
+}
 
 const setElsi = async () => {
-        try {
-            console.log("attempt to update Elsi uid:", selectedTeam.value.id, "amount: ", setElsiAmount.value)
-            let balanceRef = doc(db, "users", selectedTeam.value.id);
-            await updateDoc(balanceRef, {
-                elsi_bal : (setElsiAmount.value),
-            });
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Elsi berhasil diubah', life: 3000 });
-      } catch (e) {
+    try {
+        console.log("attempt to update Elsi uid:", selectedTeam.value.id, "amount: ", setElsiAmount.value)
+        let balanceRef = doc(db, "users", selectedTeam.value.id);
+        await updateDoc(balanceRef, {
+            elsi_bal: (setElsiAmount.value),
+        });
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Elsi berhasil diubah', life: 3000 });
+    } catch (e) {
         console.error("Error setting Elsi :", e);
-}}
+    }
+}
 
 const setPisi = async () => {
-        try {
-            console.log("attempt to update Pisi uid:", selectedTeam.value.id, "amount: ", setPisiAmount.value)
-            let balanceRef = doc(db, "users", selectedTeam.value.id);
-            await updateDoc(balanceRef, {
-                pisi_bal : (setPisiAmount.value),
-            });
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Pisi berhasil diubah', life: 3000 });
-      } catch (e) {
+    try {
+        console.log("attempt to update Pisi uid:", selectedTeam.value.id, "amount: ", setPisiAmount.value)
+        let balanceRef = doc(db, "users", selectedTeam.value.id);
+        await updateDoc(balanceRef, {
+            pisi_bal: (setPisiAmount.value),
+        });
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Pisi berhasil diubah', life: 3000 });
+    } catch (e) {
         console.error("Error setting Pisi :", e);
-}}
+    }
+}
 
 const setEsti = async () => {
-        try {
-            console.log("attempt to update Esti uid:", selectedTeam.value.id, "amount: ", setEstiAmount.value)
-            let balanceRef = doc(db, "users", selectedTeam.value.id);
-            await updateDoc(balanceRef, {
-                esti_bal : (setEstiAmount.value),
-            });
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Esti berhasil diubah', life: 3000 });
-      } catch (e) {
+    try {
+        console.log("attempt to update Esti uid:", selectedTeam.value.id, "amount: ", setEstiAmount.value)
+        let balanceRef = doc(db, "users", selectedTeam.value.id);
+        await updateDoc(balanceRef, {
+            esti_bal: (setEstiAmount.value),
+        });
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Esti berhasil diubah', life: 3000 });
+    } catch (e) {
         console.error("Error setting Esti :", e);
-}}
+    }
+}
 
 const allowBagiPoin = async () => {
     try {
@@ -540,15 +528,15 @@ const allowBagiPoin = async () => {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
         const querySnapshot = await getDocs(q);
-        
+
         const batch = writeBatch(db);
-        
+
         querySnapshot.forEach((doc) => {
             batch.update(doc.ref, { hasBagiPoin: false });
         });
-        
+
         await batch.commit();
-        
+
         toast.add({ severity: 'success', summary: 'Success', detail: 'Bagi Poin diizinkan untuk semua tim', life: 3000 });
     } catch (e) {
         console.error("Error setting allowBagiPoin :", e);
@@ -561,15 +549,15 @@ const blockBagiPoin = async () => {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
         const querySnapshot = await getDocs(q);
-        
+
         const batch = writeBatch(db);
-        
+
         querySnapshot.forEach((doc) => {
             batch.update(doc.ref, { hasBagiPoin: true });
         });
-        
+
         await batch.commit();
-        
+
         toast.add({ severity: 'success', summary: 'Success', detail: 'Bagi Poin diblok untuk semua tim', life: 3000 });
     } catch (e) {
         console.error("Error setting allowBagiPoin :", e);
@@ -582,15 +570,15 @@ const allowJawabSoal = async () => {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("ruang", "==", selectedRoom.value.code));
         const querySnapshot = await getDocs(q);
-        
+
         const batch = writeBatch(db);
-        
+
         querySnapshot.forEach((doc) => {
             batch.update(doc.ref, { hasJawabSoal: false });
         });
-        
+
         await batch.commit();
-        
+
         toast.add({ severity: 'success', summary: 'Success', detail: 'Jawab Soal diizinkan untuk semua tim', life: 3000 });
     } catch (e) {
         console.error("Error setting allowJawabSoal :", e);
@@ -605,13 +593,13 @@ const blockJawabSoal = async () => {
         const querySnapshot = await getDocs(q);
 
         const batch = writeBatch(db);
-        
+
         querySnapshot.forEach((doc) => {
             batch.update(doc.ref, { hasJawabSoal: true });
         });
-        
+
         await batch.commit();
-        
+
         toast.add({ severity: 'success', summary: 'Success', detail: 'Jawab Soal diblokir untuk semua tim', life: 3000 });
     } catch (e) {
         console.error("Error setting blockJawabSoal :", e);
@@ -626,13 +614,13 @@ const allowBelanjaTroops = async () => {
         const querySnapshot = await getDocs(q);
 
         const batch = writeBatch(db);
-        
+
         querySnapshot.forEach((doc) => {
             batch.update(doc.ref, { hasBelanjaTroops: false });
         });
-        
+
         await batch.commit();
-        
+
         toast.add({ severity: 'success', summary: 'Success', detail: 'Belanja Troops diizinkan untuk semua tim', life: 3000 });
     }
     catch (e) {
@@ -648,11 +636,11 @@ const blockBelanjaTroops = async () => {
         const querySnapshot = await getDocs(q);
 
         const batch = writeBatch(db);
-        
+
         querySnapshot.forEach((doc) => {
             batch.update(doc.ref, { hasBelanjaTroops: true });
         });
-        
+
         await batch.commit();
 
         toast.add({ severity: 'success', summary: 'Success', detail: 'Belanja Troops diblokir untuk semua tim', life: 3000 });
@@ -670,13 +658,13 @@ const allowPlaceTroops = async () => {
         const querySnapshot = await getDocs(q);
 
         const batch = writeBatch(db);
-        
+
         querySnapshot.forEach((doc) => {
             batch.update(doc.ref, { hasPlaceTroops: false });
         });
-        
+
         await batch.commit();
-        
+
         toast.add({ severity: 'success', summary: 'Success', detail: 'Place Troops diizinkan untuk semua tim', life: 3000 });
     }
     catch (e) {
@@ -692,18 +680,18 @@ const blockPlaceTroops = async () => {
         const querySnapshot = await getDocs(q);
 
         const batch = writeBatch(db);
-        
+
         querySnapshot.forEach((doc) => {
-            batch.update(doc.ref, { 
+            batch.update(doc.ref, {
                 hasPlaceTroops: true,
                 elsi_bal: 0,
                 pisi_bal: 0,
                 esti_bal: 0
             });
         });
-        
+
         await batch.commit();
-        
+
         toast.add({ severity: 'success', summary: 'Success', detail: 'Place Troops diblokir untuk semua tim', life: 3000 });
     }
     catch (e) {
@@ -712,51 +700,51 @@ const blockPlaceTroops = async () => {
 }
 
 const enhancedSoalResponses = computed(() => {
-  console.log('soalResponses:', soalResponses.value);
-  console.log('teamsInRoom:', teamsInRoom.value);
-  
-  if (!soalResponses.value || !teamsInRoom.value) return [];
-  
-  const enhanced = soalResponses.value.map(response => {
-    const team = teamsInRoom.value.find(team => team.id === response.user);
-    const result = {
-      ...response,
-      side: team ? team.data.side : null
-    };
-    console.log('Enhanced response:', result);
-    return result;
-  });
-  
-  console.log('Final enhancedSoalResponses:', enhanced);
-  return enhanced;
+    console.log('soalResponses:', soalResponses.value);
+    console.log('teamsInRoom:', teamsInRoom.value);
+
+    if (!soalResponses.value || !teamsInRoom.value) return [];
+
+    const enhanced = soalResponses.value.map(response => {
+        const team = teamsInRoom.value.find(team => team.id === response.user);
+        const result = {
+            ...response,
+            side: team ? team.data.side : null
+        };
+        console.log('Enhanced response:', result);
+        return result;
+    });
+
+    console.log('Final enhancedSoalResponses:', enhanced);
+    return enhanced;
 });
 
 const enhancedPointsResponses = computed(() => {
-  console.log('pointsResponses:', pointsResponses.value);
-  console.log('teamsInRoom:', teamsInRoom.value);
-  
-  if (!pointsResponses.value || !teamsInRoom.value) return [];
-  
-  const enhanced = pointsResponses.value.map(response => {
-    const team = teamsInRoom.value.find(team => team.id === response.user);
-    const result = {
-        ...response,
-        side: team ? team.data.side : null
-    };
-    console.log('Enhanced response:', result);
-    return result;
-  });
-  
-  console.log('Final enhancedPointsResponses:', enhanced);
-  return enhanced;
+    console.log('pointsResponses:', pointsResponses.value);
+    console.log('teamsInRoom:', teamsInRoom.value);
+
+    if (!pointsResponses.value || !teamsInRoom.value) return [];
+
+    const enhanced = pointsResponses.value.map(response => {
+        const team = teamsInRoom.value.find(team => team.id === response.user);
+        const result = {
+            ...response,
+            side: team ? team.data.side : null
+        };
+        console.log('Enhanced response:', result);
+        return result;
+    });
+
+    console.log('Final enhancedPointsResponses:', enhanced);
+    return enhanced;
 });
 
 const enhancedShopResponses = computed(() => {
     console.log('shopResponses:', shopResponses.value);
     console.log('teamsInRoom:', teamsInRoom.value);
-    
+
     if (!shopResponses.value || !teamsInRoom.value) return [];
-    
+
     const enhanced = shopResponses.value.map(response => {
         const team = teamsInRoom.value.find(team => team.id === response.user);
         const result = {
@@ -766,7 +754,7 @@ const enhancedShopResponses = computed(() => {
         console.log('Enhanced response:', result);
         return result;
     });
-    
+
     console.log('Final enhancedShopResponses:', enhanced);
     return enhanced;
 });
@@ -774,9 +762,9 @@ const enhancedShopResponses = computed(() => {
 const enhancedTroopsResponses = computed(() => {
     console.log('troopsResponses:', troopsResponses.value);
     console.log('teamsInRoom:', teamsInRoom.value);
-    
+
     if (!troopsResponses.value || !teamsInRoom.value) return [];
-    
+
     const enhanced = troopsResponses.value.map(response => {
         const team = teamsInRoom.value.find(team => team.id === response.user);
         const result = {
@@ -786,7 +774,7 @@ const enhancedTroopsResponses = computed(() => {
         console.log('Enhanced response:', result);
         return result;
     });
-    
+
     console.log('Final enhancedTroopsResponses:', enhanced);
     return enhanced;
 });
@@ -856,8 +844,8 @@ const formatDateToLocal = (timestamp) => {
     }
 };
 
-const getMapDocId = (ruangNo) =>{
-    switch(ruangNo){
+const getMapDocId = (ruangNo) => {
+    switch (ruangNo) {
         case '1':
             return 'd21LqtDO5WcWdGCKJ3N3'
         case '2':
@@ -892,52 +880,50 @@ const getMapFrozenStatus = async () => {
 const toggleMapFreeze = () => {
     selectedRoomMapFrozen.value = !selectedRoomMapFrozen.value;
     if (selectedRoom.value) {
-        try{
+        try {
             updateDoc(doc(db, "map-state", getMapDocId(selectedRoom.value.code)), {
                 mapFrozen: selectedRoomMapFrozen.value
             });
             toast.add({ severity: 'success', summary: 'Success', detail: 'Status Map berhasil diubah', life: 3000 });
         } catch (e) {
-        console.error("Error setting map freeze :", e);
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Error setting map freeze, contact admin', life: 3000 });
-    }
+            console.error("Error setting map freeze :", e);
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Error setting map freeze, contact admin', life: 3000 });
+        }
     }
 };
 
 const sortedTeamsInRoom = computed(() => {
-  if (!teamsInRoom.value) return [];
-  
-  return [...teamsInRoom.value].sort((a, b) => {
-    const codeA = a.data.side?.code || 'ZZZ'; // 'ZZZ' ensures teams without a side are at the end
-    const codeB = b.data.side?.code || 'ZZZ';
-    return codeA.localeCompare(codeB);
-  });
+    if (!teamsInRoom.value) return [];
+
+    return [...teamsInRoom.value].sort((a, b) => {
+        const codeA = a.data.side?.code || 'ZZZ'; // 'ZZZ' ensures teams without a side are at the end
+        const codeB = b.data.side?.code || 'ZZZ';
+        return codeA.localeCompare(codeB);
+    });
 });
 
-onMounted( () => {
+onMounted(() => {
     if (unsubscribeSoal) unsubscribeSoal();
     if (unsubscribePoints) unsubscribePoints();
     if (unsubscribeShop) unsubscribeShop();
     if (unsubscribeTroops) unsubscribeTroops();
-}) 
+})
 
 </script>
 
 <style scoped>
 .colorbtn {
-  border: 2px solid black;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  display: flex;
-  font-size: 14px;
-  border-radius: 25%;
-  width: 25px;
-  height: 25px;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
+    border: 2px solid black;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    font-size: 14px;
+    border-radius: 25%;
+    width: 25px;
+    height: 25px;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
 }
-
-
 </style>

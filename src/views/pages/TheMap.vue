@@ -517,34 +517,36 @@
             </div>
         </div>
         <div class="card" v-if="isAdmin && mapState">
-    <div class="text-lg font-bold">Leaderboard</div>
-    <div v-if="leaderboard.length > 0">
-      <table class="min-w-full bg-white">
-        <thead>
-          <tr>
-            <th class="py-2 px-4 border-b text-center">Rank</th>
-            <th class="py-2 px-4 border-b text-center">Team Name</th>
-            <th class="py-2 px-4 border-b text-center">Total Poin Wilayah</th>
-            <th class="py-2 px-4 border-b text-center">Total Poin Troops</th>
-            <th class="py-2 px-4 border-b text-center">Total Points</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(team, index) in leaderboard" :key="team.teamName" :style="{ backgroundColor: team.color }" class="text-white font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-            <td class="py-2 px-4 border-b text-center">{{ index + 1 }}</td>
-            <td class="py-2 px-4 border-b text-center">{{ team.teamName }}</td>
-            <td class="py-2 px-4 border-b text-center">{{ team.totalPoinWilayah }}</td>
-            <td class="py-2 px-4 border-b text-center">{{ team.totalPoinTroops }}</td>
-            <td class="py-2 px-4 border-b text-center">{{ team.totalPoints }}</td>
-          </tr>
-        </tbody>
-      </table>
+            <div class="text-lg font-bold">Leaderboard</div>
+            <div v-if="leaderboard.length > 0">
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th class="py-2 px-4 border-b text-center">Rank</th>
+                            <th class="py-2 px-4 border-b text-center">Team Name</th>
+                            <th class="py-2 px-4 border-b text-center">Total Poin Wilayah</th>
+                            <th class="py-2 px-4 border-b text-center">Total Poin Troops</th>
+                            <th class="py-2 px-4 border-b text-center">Total Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(team, index) in leaderboard" :key="team.teamName"
+                            :style="{ backgroundColor: team.color }"
+                            class="text-white font-bold drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+                            <td class="py-2 px-4 border-b text-center">{{ index + 1 }}</td>
+                            <td class="py-2 px-4 border-b text-center">{{ team.teamName }}</td>
+                            <td class="py-2 px-4 border-b text-center">{{ team.totalPoinWilayah }}</td>
+                            <td class="py-2 px-4 border-b text-center">{{ team.totalPoinTroops }}</td>
+                            <td class="py-2 px-4 border-b text-center">{{ team.totalPoints }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div v-else>
+                No teams data available
+            </div>
+        </div>
     </div>
-    <div v-else>
-      No teams data available
-    </div>
-  </div>
-</div>
 </template>
 
 <script setup>
@@ -654,44 +656,44 @@ const teamsInRoom = ref(null);
 const queryTeams = async (selected) => {
     console.log("querying teams in room :", selected);
     const q = query(collection(db, 'users'), where('ruang', '==', selected));
-      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
         documents.value = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          data: doc.data()
+            id: doc.id,
+            data: doc.data()
         }));
         teamsInRoom.value = documents.value;
 
         console.log("team in room:", teamsInRoom.value);
-      }, (error) => {
+    }, (error) => {
         console.error("Error listening to documents: ", error);
-      });
+    });
 }
 
 const leaderboard = computed(() => {
-  if (!mapState.value || !teamsInRoom.value) return [];
+    if (!mapState.value || !teamsInRoom.value) return [];
 
-  const teamScores = teamsInRoom.value.map(team => {
-    const teamColor = team.data.side.color;
-    let totalPoinWilayah = 0;
-    let totalPoinTroops = 0;
+    const teamScores = teamsInRoom.value.map(team => {
+        const teamColor = team.data.side.color;
+        let totalPoinWilayah = 0;
+        let totalPoinTroops = 0;
 
-    Object.values(mapState.value).forEach(area => {
-      if (area.color === teamColor) {
-        totalPoinWilayah += (area.poin_wilayah || 0);
-        totalPoinTroops += (area.poin_troops || 0);
-      }
+        Object.values(mapState.value).forEach(area => {
+            if (area.color === teamColor) {
+                totalPoinWilayah += (area.poin_wilayah || 0);
+                totalPoinTroops += (area.poin_troops || 0);
+            }
+        });
+
+        return {
+            teamName: team.data.team_name,
+            color: teamColor,
+            totalPoinWilayah,
+            totalPoinTroops,
+            totalPoints: totalPoinWilayah + totalPoinTroops
+        };
     });
 
-    return {
-      teamName: team.data.team_name,
-      color: teamColor,
-      totalPoinWilayah,
-      totalPoinTroops,
-      totalPoints: totalPoinWilayah + totalPoinTroops
-    };
-  });
-
-  return teamScores.sort((a, b) => b.totalPoints - a.totalPoints);
+    return teamScores.sort((a, b) => b.totalPoints - a.totalPoints);
 });
 
 const getUserDetails = (userId) => {
