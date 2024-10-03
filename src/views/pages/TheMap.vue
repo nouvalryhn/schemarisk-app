@@ -60,12 +60,12 @@
                         <Button class="w-[5rem] mr-2" label="Unfreeze" @click="unfreezeArea()" severity="warn"></Button>
                     </div>
                     <div>
-                        <InputNumber v-model="setWilayahAmount" class="w-[15rem] mr-2" />
+                        <InputNumber v-model="setWilayahAmount" class="w-[15rem] mr-2" @keyup.enter="setPointWilayah" />
                         <Button label="set poin wilayah" @click="setPointWilayah"></Button>
                     </div>
 
                     <div>
-                        <InputNumber v-model="setTroopsAmount" class="w-[15rem] mr-2" />
+                        <InputNumber v-model="setTroopsAmount" class="w-[15rem] mr-2" @keyup.enter="setPoinTroops" />
                         <Button label="set poin troops" @click="setPoinTroops"></Button>
                     </div>
 
@@ -721,8 +721,10 @@ const freezeArea = () => {
                 poin_wilayah: mapState.value[clickedArea.value]?.poin_wilayah ?? 0,
             }
         })
+        toast.add({ severity: 'success', summary: 'Berhasil Freeze Wilayah', detail: `${clickedArea.value} → Frozen`, life: 3000 });
     } catch (e) {
         console.error(e);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error Freezing Area, Contact Admin', life: 3000 });
     }
 }
 
@@ -750,8 +752,10 @@ const unfreezeArea = () => {
                 poin_wilayah: mapState.value[clickedArea.value]?.poin_wilayah ?? 0,
             }
         })
+        toast.add({ severity: 'success', summary: 'Berhasil Unfreeze Wilayah', detail: `${clickedArea.value} → Unfrozen`, life: 3000 });
     } catch (e) {
         console.error(e);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error Unfreezing Area, Contact Admin', life: 3000 });
     }
 }
 
@@ -790,6 +794,7 @@ const setPoinTroops = () => {
     const mapDocId = getMapDocId(selectedRoom.value.code);
     const poinRef = doc(db, "map-state", mapDocId);
     try {
+        let tmp = mapState.value[clickedArea.value].poin_troops;
         updateDoc(poinRef, {
             [clickedArea.value]: {
                 poin_troops: setTroopsAmount.value,
@@ -797,6 +802,7 @@ const setPoinTroops = () => {
                 poin_wilayah: mapState.value[clickedArea.value]?.poin_wilayah ?? 'err',
             }
         })
+        toast.add({ severity: 'success', summary: 'Poin Troops Berhasil Diubah', detail: `${clickedArea.value} ${tmp} → ${setTroopsAmount.value}`, life: 3000 });
     } catch (e) {
         console.error(e);
     }
@@ -806,6 +812,7 @@ const setPointWilayah = () => {
     const mapDocId = getMapDocId(selectedRoom.value.code);
     const wilayahRef = doc(db, "map-state", mapDocId);
     try {
+        let tmp = mapState.value[clickedArea.value].poin_wilayah;
         updateDoc(wilayahRef, {
             [clickedArea.value]: {
                 poin_wilayah: setWilayahAmount.value,
@@ -813,6 +820,7 @@ const setPointWilayah = () => {
                 poin_troops: mapState.value[clickedArea.value]?.poin_troops ?? 0,
             }
         })
+        toast.add({ severity: 'success', summary: 'Poin Wilayah Berhasil Diubah', detail: `${clickedArea.value} ${tmp} → ${setWilayahAmount.value}`, life: 3000 });
     } catch (e) {
         console.error(e);
     }
