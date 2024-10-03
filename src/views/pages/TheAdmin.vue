@@ -57,11 +57,20 @@
 
                         <div v-if="selectedTeam" class="flex flex-col gap-2">
                             <div>
+                                <InputText v-model="setTeamNameValue" class="w-[15rem] mr-2" />
+                                <Button label="set Team Name" @click="setTeamName"></Button>
+                                <span class="m-2"
+                                    :class="{ 'text-green-500': setTeamNameValue > selectedTeam.data.team_name, 'text-red-500': setTeamNameValue < selectedTeam.data.team_name }"
+                                    v-if="setTeamNameValue != selectedTeam.data.team_name"><br>Team Name: {{
+                                    selectedTeam.data.team_name }} &rarr; {{ setTeamNameValue }}</span>
+                            </div>
+
+                            <div>
                                 <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2" />
                                 <Button label="set Neleci" @click="setBalance"></Button>
                                 <span class="m-2"
                                     :class="{ 'text-green-500': setBalanceAmount > selectedTeam.data.balance, 'text-red-500': setBalanceAmount < selectedTeam.data.balance }"
-                                    v-if="setBalanceAmount != selectedTeam.data.balance">Neleci: {{
+                                    v-if="setBalanceAmount != selectedTeam.data.balance"><br>Neleci: {{
                                     selectedTeam.data.balance }} &rarr; {{ setBalanceAmount }}</span>
                             </div>
 
@@ -70,7 +79,7 @@
                                 <Button label="set Elsi" @click="setElsi"></Button>
                                 <span class="m-2"
                                     :class="{ 'text-green-500': setElsiAmount > selectedTeam.data.elsi_bal, 'text-red-500': setElsiAmount < selectedTeam.data.elsi_bal }"
-                                    v-if="setElsiAmount != selectedTeam.data.elsi_bal">Elsi: {{
+                                    v-if="setElsiAmount != selectedTeam.data.elsi_bal"><br>Elsi: {{
                                     selectedTeam.data.elsi_bal }} &rarr; {{ setElsiAmount }}</span>
                             </div>
 
@@ -79,7 +88,7 @@
                                 <Button label="set Pisi" @click="setPisi"></Button>
                                 <span class="m-2"
                                     :class="{ 'text-green-500': setPisiAmount > selectedTeam.data.pisi_bal, 'text-red-500': setPisiAmount < selectedTeam.data.pisi_bal }"
-                                    v-if="setPisiAmount != selectedTeam.data.pisi_bal">Pisi: {{
+                                    v-if="setPisiAmount != selectedTeam.data.pisi_bal"><br>Pisi: {{
                                     selectedTeam.data.pisi_bal }} &rarr; {{ setPisiAmount }}</span>
                             </div>
 
@@ -88,7 +97,7 @@
                                 <Button label="set Esti" @click="setEsti"></Button>
                                 <span class="m-2"
                                     :class="{ 'text-green-500': setEstiAmount > selectedTeam.data.esti_bal, 'text-red-500': setEstiAmount < selectedTeam.data.esti_bal }"
-                                    v-if="setEstiAmount != selectedTeam.data.esti_bal">Esti: {{
+                                    v-if="setEstiAmount != selectedTeam.data.esti_bal"><br>Esti: {{
                                     selectedTeam.data.esti_bal }} &rarr; {{ setEstiAmount }}</span>
                             </div>
 
@@ -438,6 +447,7 @@ const setBalanceAmount = ref(0);
 const setElsiAmount = ref(0);
 const setPisiAmount = ref(0);
 const setEstiAmount = ref(0);
+const setTeamNameValue = ref('');
 
 const selectedTeam = ref();
 
@@ -446,6 +456,7 @@ const documents = ref([]);
 watch(selectedTeam, () => {
     if (selectedTeam.value) {
         console.log(selectedTeam.value);
+        setTeamNameValue.value = selectedTeam.value.data.team_name;
         setBalanceAmount.value = selectedTeam.value.data.balance;
         setElsiAmount.value = selectedTeam.value.data.elsi_bal;
         setPisiAmount.value = selectedTeam.value.data.pisi_bal;
@@ -519,6 +530,19 @@ const setEsti = async () => {
         toast.add({ severity: 'success', summary: 'Success', detail: 'Esti berhasil diubah', life: 3000 });
     } catch (e) {
         console.error("Error setting Esti :", e);
+    }
+}
+
+const setTeamName = async () => {
+    try {
+        console.log("attempt to update Team Name uid:", selectedTeam.value.id, "amount: ", setTeamNameValue.value)
+        let balanceRef = doc(db, "users", selectedTeam.value.id);
+        await updateDoc(balanceRef, {
+            team_name: (setTeamNameValue.value),
+        });
+    }
+    catch (e) {
+        console.error("Error setting Team Name :", e);
     }
 }
 

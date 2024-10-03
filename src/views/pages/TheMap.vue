@@ -519,7 +519,7 @@
         <div class="card" v-if="isAdmin && mapState">
             <div class="text-lg font-bold">Leaderboard</div>
             <div v-if="leaderboard.length > 0">
-                <table class="min-w-full bg-white">
+                <table class="min-w-full">
                     <thead>
                         <tr>
                             <th class="py-2 px-4 border-b text-center">Rank</th>
