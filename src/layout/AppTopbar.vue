@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 
 import { onMounted, ref, onUnmounted } from 'vue';
 import { getAuth, onAuthStateChanged, signOut} from "firebase/auth";
-import { getFirestore, onSnapshot, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { getFirestore, doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 const isLoggedIn = ref(false);
 const router = useRouter();
@@ -13,7 +13,6 @@ const isFirestoreConnected = ref(true);
 
 let auth;
 let db;
-let unsubscribeFirestore;
 let connectionCheckInterval;
 
 const checkFirestoreConnection = async () => {
@@ -22,12 +21,17 @@ const checkFirestoreConnection = async () => {
         try {
             const writePromise = setDoc(docRef, { lastUpdate: serverTimestamp() });
             const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Write operation timeout')), 2000)
+                setTimeout(() => reject(new Error('Write operation timeout')), 5000)
             );
             await Promise.race([writePromise, timeoutPromise]);
+            if (!isFirestoreConnected.value) {
+                console.log("Firestore connection restored");
+            }
             isFirestoreConnected.value = true;
         } catch (error) {
-            console.error("Firestore connection error:", error);
+            if (isFirestoreConnected.value) {
+                console.error("Firestore connection lost:", error);
+            }
             isFirestoreConnected.value = false;
         }
     } else {
@@ -35,46 +39,25 @@ const checkFirestoreConnection = async () => {
     }
 };
 
-const startFirestoreListener = () => {
-    if (db) {
-        const docRef = doc(db, '_connectionTest', 'status');
-        
-        // Set up an interval to check the connection
-        connectionCheckInterval = setInterval(checkFirestoreConnection, 10000); // Check every 10 seconds
+const startConnectionCheck = () => {
+    // Initial check
+    checkFirestoreConnection();
+    
+    // Set up interval for periodic checks
+    connectionCheckInterval = setInterval(checkFirestoreConnection, 10000); // Check every 10 seconds
 
-        // Listen for changes to the document
-        unsubscribeFirestore = onSnapshot(docRef, 
-            () => {
-                if (!isFirestoreConnected.value) {
-                    console.log("Firestore connection restored");
-                    isFirestoreConnected.value = true;
-                }
-            },
-            (error) => {
-                console.error("Firestore connection error:", error);
-                isFirestoreConnected.value = false;
-            }
-        );
-
-        // Intercept console warnings
-        const originalWarn = console.warn;
-        console.warn = function() {
-            const args = Array.from(arguments);
-            if (args[0] && args[0].includes('@firebase/firestore:')) {
-                isFirestoreConnected.value = false;
-            }
-            originalWarn.apply(console, args);
-        };
-
-        // Initial connection check
-        checkFirestoreConnection();
-    }
+    // Intercept console warnings
+    const originalWarn = console.warn;
+    console.warn = function() {
+        const args = Array.from(arguments);
+        if (args[0] && args[0].includes('@firebase/firestore:')) {
+            isFirestoreConnected.value = false;
+        }
+        originalWarn.apply(console, args);
+    };
 };
 
-const stopFirestoreListener = () => {
-    if (unsubscribeFirestore) {
-        unsubscribeFirestore();
-    }
+const stopConnectionCheck = () => {
     if (connectionCheckInterval) {
         clearInterval(connectionCheckInterval);
     }
@@ -89,17 +72,17 @@ onMounted(() => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             isLoggedIn.value = true;
-            startFirestoreListener();
+            startConnectionCheck();
         } else {
             isLoggedIn.value = false;
             isFirestoreConnected.value = false;
-            stopFirestoreListener();
+            stopConnectionCheck();
         }
     });
 });
 
 onUnmounted(() => {
-    stopFirestoreListener();
+    stopConnectionCheck();
 });
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
