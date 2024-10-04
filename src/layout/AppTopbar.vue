@@ -6,6 +6,7 @@ import { useRouter } from 'vue-router';
 import { onMounted, ref, onUnmounted } from 'vue';
 import { getAuth, onAuthStateChanged, signOut} from "firebase/auth";
 import { getFirestore, doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { onSnapshot, getDoc } from "firebase/firestore";
 
 const isLoggedIn = ref(false);
 const router = useRouter();
@@ -14,24 +15,22 @@ const isFirestoreConnected = ref(true);
 let auth;
 let db;
 let connectionCheckInterval;
+const checkInterval = 10000; // Check every 10 seconds
 
-const checkFirestoreConnection = async () => {
+const pingFirestore = async () => {
     if (isLoggedIn.value && db) {
         const docRef = doc(db, '_connectionTest', 'status');
         try {
-            const writePromise = setDoc(docRef, { lastUpdate: serverTimestamp() });
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Write operation timeout')), 5000)
-            );
-            await Promise.race([writePromise, timeoutPromise]);
-            if (!isFirestoreConnected.value) {
-                console.log("Firestore connection restored");
+            const docSnapshot = await getDoc(docRef);
+            if (docSnapshot.exists()) {
+                console.log("Firestore is reachable");
+                isFirestoreConnected.value = true;
+            } else {
+                console.log("Document does not exist");
+                isFirestoreConnected.value = false;
             }
-            isFirestoreConnected.value = true;
         } catch (error) {
-            if (isFirestoreConnected.value) {
-                console.error("Firestore connection lost:", error);
-            }
+            console.error("Error pinging Firestore:", error);
             isFirestoreConnected.value = false;
         }
     } else {
@@ -39,30 +38,32 @@ const checkFirestoreConnection = async () => {
     }
 };
 
+const setupNetworkStatusListeners = () => {
+    window.addEventListener('online', () => {
+        console.log('Network is online');
+        if (isLoggedIn.value) {
+            pingFirestore();
+        }
+    });
+
+    window.addEventListener('offline', () => {
+        console.log('Network is offline');
+        isFirestoreConnected.value = false;
+    });
+};
+
 const startConnectionCheck = () => {
     // Initial check
-    checkFirestoreConnection();
+    pingFirestore();
     
     // Set up interval for periodic checks
-    connectionCheckInterval = setInterval(checkFirestoreConnection, 10000); // Check every 10 seconds
-
-    // Intercept console warnings
-    const originalWarn = console.warn;
-    console.warn = function() {
-        const args = Array.from(arguments);
-        if (args[0] && args[0].includes('@firebase/firestore:')) {
-            isFirestoreConnected.value = false;
-        }
-        originalWarn.apply(console, args);
-    };
+    connectionCheckInterval = setInterval(pingFirestore, checkInterval);
 };
 
 const stopConnectionCheck = () => {
     if (connectionCheckInterval) {
         clearInterval(connectionCheckInterval);
     }
-    // Restore original console.warn
-    console.warn = console.warn.bind(console);
 };
 
 onMounted(() => {
@@ -72,6 +73,7 @@ onMounted(() => {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             isLoggedIn.value = true;
+            setupNetworkStatusListeners();
             startConnectionCheck();
         } else {
             isLoggedIn.value = false;
@@ -83,6 +85,8 @@ onMounted(() => {
 
 onUnmounted(() => {
     stopConnectionCheck();
+    window.removeEventListener('online', setupNetworkStatusListeners);
+    window.removeEventListener('offline', setupNetworkStatusListeners);
 });
 
 const { onMenuToggle, toggleDarkMode, isDarkTheme } = useLayout();
