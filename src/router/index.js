@@ -41,7 +41,9 @@ const router = createRouter({
                     path: '/map',
                     name: 'map',
                     component: () => import('@/views/pages/TheMap.vue'),
-                
+                    meta : {
+                        requiresAuth: true,
+                    },
                 },
             ]
         },
@@ -157,7 +159,11 @@ const router = createRouter({
         {
             path: '/register',
             name: 'register',
-            component: () => import('@/views/pages/auth/Register.vue')
+            component: () => import('@/views/pages/auth/Register.vue'),
+            meta : {
+                requiresAuth: true,
+                requiresAdmin: true,
+            },
         },
 
         {
