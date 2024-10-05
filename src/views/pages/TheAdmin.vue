@@ -57,16 +57,15 @@
 
                         <div v-if="selectedTeam" class="flex flex-col gap-2">
                             <div>
-                                <InputText v-model="setTeamNameValue" class="w-[15rem] mr-2" />
+                                <InputText v-model="setTeamNameValue" class="w-[15rem] mr-2" @keyup.enter="setTeamName" />
                                 <Button label="set Team Name" @click="setTeamName"></Button>
                                 <span class="m-2"
-                                    :class="{ 'text-green-500': setTeamNameValue > selectedTeam.data.team_name, 'text-red-500': setTeamNameValue < selectedTeam.data.team_name }"
                                     v-if="setTeamNameValue != selectedTeam.data.team_name"><br>Team Name: {{
                                     selectedTeam.data.team_name }} &rarr; {{ setTeamNameValue }}</span>
                             </div>
 
                             <div>
-                                <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2" />
+                                <InputNumber v-model="setBalanceAmount" class="w-[15rem] mr-2" @keyup.enter="setBalance" />
                                 <Button label="set Neleci" @click="setBalance"></Button>
                                 <span class="m-2"
                                     :class="{ 'text-green-500': setBalanceAmount > selectedTeam.data.balance, 'text-red-500': setBalanceAmount < selectedTeam.data.balance }"
@@ -75,7 +74,7 @@
                             </div>
 
                             <div>
-                                <InputNumber v-model="setElsiAmount" class="w-[15rem] mr-2" />
+                                <InputNumber v-model="setElsiAmount" class="w-[15rem] mr-2" @keyup.enter="setElsi" />
                                 <Button label="set Elsi" @click="setElsi"></Button>
                                 <span class="m-2"
                                     :class="{ 'text-green-500': setElsiAmount > selectedTeam.data.elsi_bal, 'text-red-500': setElsiAmount < selectedTeam.data.elsi_bal }"
@@ -84,7 +83,7 @@
                             </div>
 
                             <div>
-                                <InputNumber v-model="setPisiAmount" class="w-[15rem] mr-2" />
+                                <InputNumber v-model="setPisiAmount" class="w-[15rem] mr-2" @keyup.enter="setPisi" />
                                 <Button label="set Pisi" @click="setPisi"></Button>
                                 <span class="m-2"
                                     :class="{ 'text-green-500': setPisiAmount > selectedTeam.data.pisi_bal, 'text-red-500': setPisiAmount < selectedTeam.data.pisi_bal }"
@@ -93,7 +92,7 @@
                             </div>
 
                             <div>
-                                <InputNumber v-model="setEstiAmount" class="w-[15rem] mr-2" />
+                                <InputNumber v-model="setEstiAmount" class="w-[15rem] mr-2" @keyup.enter="setEsti" />
                                 <Button label="set Esti" @click="setEsti"></Button>
                                 <span class="m-2"
                                     :class="{ 'text-green-500': setEstiAmount > selectedTeam.data.esti_bal, 'text-red-500': setEstiAmount < selectedTeam.data.esti_bal }"
@@ -491,6 +490,7 @@ const setBalance = async () => {
         toast.add({ severity: 'success', summary: 'Success', detail: 'Neleci berhasil diubah', life: 3000 });
     } catch (e) {
         console.error("Error setting neleci :", e);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Neleci gagal diubah', life: 3000 });
     }
 }
 
@@ -504,6 +504,7 @@ const setElsi = async () => {
         toast.add({ severity: 'success', summary: 'Success', detail: 'Elsi berhasil diubah', life: 3000 });
     } catch (e) {
         console.error("Error setting Elsi :", e);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Elsi gagal diubah', life: 3000 });
     }
 }
 
@@ -517,6 +518,7 @@ const setPisi = async () => {
         toast.add({ severity: 'success', summary: 'Success', detail: 'Pisi berhasil diubah', life: 3000 });
     } catch (e) {
         console.error("Error setting Pisi :", e);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Pisi gagal diubah', life: 3000 });
     }
 }
 
@@ -530,6 +532,7 @@ const setEsti = async () => {
         toast.add({ severity: 'success', summary: 'Success', detail: 'Esti berhasil diubah', life: 3000 });
     } catch (e) {
         console.error("Error setting Esti :", e);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Esti gagal diubah', life: 3000 });
     }
 }
 
@@ -540,9 +543,10 @@ const setTeamName = async () => {
         await updateDoc(balanceRef, {
             team_name: (setTeamNameValue.value),
         });
-    }
-    catch (e) {
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Nama tim berhasil diubah', life: 3000 });
+    }   catch (e) {
         console.error("Error setting Team Name :", e);
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Nama tim gagal diubah', life: 3000 });
     }
 }
 
